@@ -129,11 +129,13 @@ def main():
             P["shade_closed_lower_edge_mm"]+P["shade_height_mm"]+travel),
             frame,r,P["shade_thickness_mm"])
         center=P["shade_closed_lower_edge_mm"]+P["handle_center_from_shade_lower_edge_mm"]
-        handle_closed_envelope=cylindrical_slab(rectangle(100.2,center-13,center+13),
-            frame,r-40.1,40.1001,r)
-        assert handle.cut(handle_closed_envelope).Volume()<.002
-        handle_envelope=cylindrical_slab(rectangle(100.2,center-13,center+13+travel),
-            frame,r-40.1,40.1001,r)
+        handle_closed_envelope=cylindrical_slab(rectangle(100.6,center-13.3,center+13.3),
+            frame,r-40.2,40.4,r)
+        outside=handle.cut(handle_closed_envelope,tol=.00001).Volume()
+        print("Handle envelope residual",outside,"handle volume",handle.Volume(),"envelope volume",handle_closed_envelope.Volume(),flush=True)
+        assert outside<.002,("handle envelope containment",outside)
+        handle_envelope=cylindrical_slab(rectangle(100.6,center-13.3,center+13.3+travel),
+            frame,r-40.2,40.4,r)
         print("Check continuous swept envelopes",i,flush=True)
         checks={}
         for name,a,b in [("panel/cup",panel,cup),("panel/shade_sweep",panel,shade_envelope),
