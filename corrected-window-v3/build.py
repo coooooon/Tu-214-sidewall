@@ -112,7 +112,7 @@ def exact_bounds(shape):
                            xlen=xmax-xmin,ylen=ymax-ymin,zlen=zmax-zmin)
 
 def mesh_bounds(shape):
-    vertices,_=shape.tessellate(.002,.015)
+    vertices,_=shape.tessellate(.01,.08)
     pts=np.array([v.toTuple() for v in vertices])
     xmin,ymin,zmin=pts.min(axis=0);xmax,ymax,zmax=pts.max(axis=0)
     return SimpleNamespace(xmin=xmin,ymin=ymin,zmin=zmin,xmax=xmax,ymax=ymax,zmax=zmax,

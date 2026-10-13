@@ -10,7 +10,7 @@ permissions:
   contents: write
 concurrency:
   group: tu214-cad-v3
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   rebuild:
     runs-on: ubuntu-latest
