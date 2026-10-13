@@ -13,6 +13,7 @@ from OCP.BRepBuilderAPI import BRepBuilderAPI_Sewing, BRepBuilderAPI_MakeEdge
 from OCP.TopoDS import TopoDS
 from OCP.BRepBndLib import BRepBndLib
 from OCP.Bnd import Bnd_Box
+from OCP.BRepTools import BRepTools
 from OCP.BRepExtrema import BRepExtrema_DistShapeShape
 from types import SimpleNamespace
 
@@ -119,6 +120,7 @@ def mesh_bounds(shape):
                            xlen=xmax-xmin,ylen=ymax-ymin,zlen=zmax-zmin)
 
 def affine(shape, rows):
+    BRepTools.Clean_s(shape.wrapped)
     return shape.transformGeometry(cq.Matrix(rows))
 
 def build_handle():
@@ -159,8 +161,13 @@ def build_handle():
         except Exception as error:
             print("Handle fillet retry",radius,type(error).__name__,flush=True)
     if not filleted: print("Handle: smooth planform, intersection edges retained",flush=True)
-    bb=mesh_bounds(grip)
-    print("Handle geometric versus mesh bounds",vars(exact_bounds(grip)),vars(bb),flush=True)
+    quarter=grip.intersect(cq.Solid.makeBox(65,60,25,cq.Vector(0,-50,0))).fix()
+    assert quarter.isValid() and len(quarter.Solids())==1
+    opposite_x=quarter.mirror("YZ")
+    half=quarter.fuse(opposite_x).fix()
+    grip=half.fuse(half.mirror("XY")).fix()
+    assert grip.isValid() and len(grip.Solids())==1
+    bb=exact_bounds(grip)
     sx,sy,sz=100/bb.xlen,40/bb.ylen,25/bb.zlen
     grip=affine(grip,[[sx,0,0,-sx*(bb.xmin+bb.xmax)/2],
                      [0,sy,0,-sy*bb.ymax],[0,0,sz,-sz*(bb.zmin+bb.zmax)/2],[0,0,0,1]])

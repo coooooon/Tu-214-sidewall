@@ -104,7 +104,7 @@ def main():
         assert digest_geometry(items,panel_representation(items))==reference
         report["assemblies"].append({"file":path.name,"valid_solids":7,"panel_geometry_identical":True})
     canonical=load("handle")
-    bb=mesh_bounds(canonical)
+    bb=exact_bounds(canonical)
     dims=[bb.xlen,bb.ylen,bb.zlen]
     assert np.allclose(dims,[100,40,25],atol=.015),dims
     report["handle_dimensions_mm"]=dims
