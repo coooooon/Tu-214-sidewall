@@ -9,7 +9,7 @@ import sys, os, json, math, hashlib
 os.environ.setdefault("XDG_CACHE_HOME", "/tmp/tu214-v3-cache")
 import numpy as np
 import cadquery as cq
-from OCP.BRepBuilderAPI import BRepBuilderAPI_Sewing
+from OCP.BRepBuilderAPI import BRepBuilderAPI_Sewing, BRepBuilderAPI_MakeEdge
 from OCP.TopoDS import TopoDS
 
 ROOT = Path(__file__).resolve().parent
@@ -113,7 +113,15 @@ def build_handle():
          (49,-13),(45,-32),(36,-40),(25,-36.5),(0,-30),
          (-25,-36.5),(-36,-40),(-45,-32),(-49,-13)]
     edge=cq.Edge.makeSpline([cq.Vector(x,y,-20) for x,y in pts],periodic=True)
-    wire=cq.Wire.assembleEdges([edge])
+    adaptor=edge._geomAdaptor()
+    curve=adaptor.Curve().Curve()
+    start,end=adaptor.FirstParameter(),adaptor.LastParameter()
+    pieces=[]
+    for lo,hi in zip(np.linspace(start,end,5)[:-1],np.linspace(start,end,5)[1:]):
+        piece=curve.Copy()
+        piece.Segment(float(lo),float(hi))
+        pieces.append(cq.Edge(BRepBuilderAPI_MakeEdge(piece).Edge()))
+    wire=cq.Wire.assembleEdges(pieces)
     bb=wire.BoundingBox()
     sx,sy=100/bb.xlen,40/bb.ylen
     wire=affine(wire,[[sx,0,0,-sx*(bb.xmin+bb.xmax)/2],
@@ -147,7 +155,7 @@ def mount_handle(canonical,frame):
     matrix=cq.Matrix([[1,0,0,frame.cx],
                      [0,c,-ss,frame.cy+P["shade_radius_mm"]*c],
                      [0,ss,c,frame.cz+P["shade_radius_mm"]*ss],[0,0,0,1]])
-    mounted=canonical.transformShape(matrix)
+    mounted=canonical.transformGeometry(matrix)
     # A matching cylindrical mounting face touches the blade without overlap.
     inside=cq.Solid.makeCylinder(P["shade_radius_mm"],120,
              cq.Vector(frame.cx-60,frame.cy,frame.cz),cq.Vector(1,0,0))

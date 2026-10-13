@@ -5,6 +5,7 @@ import numpy as np
 import cadquery as cq
 from OCP.BRepAdaptor import BRepAdaptor_Surface
 from OCP.gp import gp_Pnt,gp_Vec
+from OCP.BRepExtrema import BRepExtrema_DistShapeShape
 from build import P,ROOT,CAD,SOURCE,frames_from_panel,extract_throat,curve_data,rows_data
 from cylindrical_parts import cylindrical_slab,move_on_cylinder
 from profile_geometry import Bezier
@@ -142,6 +143,12 @@ def main():
             checks[name]=volume
             print(name,volume,flush=True)
             assert volume<.002,(i,name,volume)
+        distances={}
+        for name,a,b in [("panel/cup",panel,cup),("panel/shade_sweep",panel,shade_envelope),("cup/shade_sweep",cup,shade_envelope)]:
+            measure=BRepExtrema_DistShapeShape(a.wrapped,b.wrapped)
+            measure.Perform()
+            assert measure.IsDone()
+            distances[name]=measure.Value()
         cq.exporters.export(shade_envelope,str(CAD/f"check_shade_sweep_{i}.step"),exportType="STEP")
         cq.exporters.export(handle_envelope,str(CAD/f"check_handle_sweep_{i}.step"),exportType="STEP")
         positions=[]
@@ -156,7 +163,7 @@ def main():
                     assert volume<.002,(i,t,name,volume)
                 positions.append({"travel_mm":float(t),"intersections_mm3":0})
         report["motion"].append({"window":i,"shade_radii_mm":radii,"concentric":True,
-           "full_motion_envelopes_checked":True,"swept_intersections_mm3":checks,
+           "full_motion_envelopes_checked":True,"swept_intersections_mm3":checks,"minimum_clearances_mm":distances,
            "open_and_half_confirmed":positions})
     report["all_checks_passed"]=True
     (ROOT/"validation.json").write_text(json.dumps(report,indent=2)+"\n")
