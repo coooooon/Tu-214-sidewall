@@ -36,6 +36,22 @@ def panel_representation(items):
     sd=next(r for r in items.values() if r.startswith("SHAPE_DEFINITION_REPRESENTATION(") and pshape in references(r))
     return next(i for i in references(sd) if items[i].startswith("ADVANCED_BREP_SHAPE_REPRESENTATION("))
 
+def annular_sector(frame,width,low,high,inner,outer,reference):
+    # Independent exact 3D arcs and a straight X extrusion. This avoids
+    # periodic surface UV trimming in the verification volume.
+    a0,a1=frame.theta+low/reference,frame.theta+high/reference
+    am=(a0+a1)/2
+    def point(radius,angle):
+        return cq.Vector(frame.cx-width/2,frame.cy+radius*math.cos(angle),
+                         frame.cz+radius*math.sin(angle))
+    p1,p2,p3,p4=point(inner,a0),point(outer,a0),point(outer,a1),point(inner,a1)
+    edges=[cq.Edge.makeLine(p1,p2),
+           cq.Edge.makeThreePointArc(p2,point(outer,am),p3),
+           cq.Edge.makeLine(p3,p4),
+           cq.Edge.makeThreePointArc(p4,point(inner,am),p1)]
+    wire=cq.Wire.assembleEdges(edges)
+    return pure_solid(cq.Solid.extrudeLinear(wire,[],cq.Vector(width,0,0)))
+
 def rectangle(width,low,high):
     x=width/2; pts=np.array([[-x,low],[x,low],[x,high],[-x,high]])
     return [Bezier(np.array([pts[i],pts[(i+1)%4]])) for i in range(4)]
@@ -131,12 +147,11 @@ def main():
             a=f._geomAdaptor().Cylinder().Axis()
             assert abs(a.Location().Y()-frame.cy)<1e-8 and abs(a.Location().Z()-frame.cz)<1e-8
         r=P["shade_radius_mm"];travel=P["shade_open_travel_mm"]
-        shade_envelope=cylindrical_slab(rectangle(P["shade_width_mm"],P["shade_closed_lower_edge_mm"],
-            P["shade_closed_lower_edge_mm"]+P["shade_height_mm"]+travel),
-            frame,r,P["shade_thickness_mm"])
+        shade_envelope=annular_sector(frame,P["shade_width_mm"],P["shade_closed_lower_edge_mm"],
+            P["shade_closed_lower_edge_mm"]+P["shade_height_mm"]+travel,
+            r,r+P["shade_thickness_mm"],r)
         center=P["shade_closed_lower_edge_mm"]+P["handle_center_from_shade_lower_edge_mm"]
-        handle_closed_envelope=cylindrical_slab(rectangle(100.6,center-13.3,center+13.3),
-            frame,r-40.2,40.4,r)
+        handle_closed_envelope=annular_sector(frame,100.6,center-13.3,center+13.3,r-40.2,r+.2,r)
         difference=handle.cut(handle_closed_envelope,tol=.00001)
         outside=sum(max(0,float(s.Volume())) for s in difference.Solids())
         a=frame.theta+center/r
@@ -144,8 +159,7 @@ def main():
         print("Envelope witness is inside",handle_closed_envelope.isInside(witness),"body inside witness",handle.isInside(witness),flush=True)
         print("Handle envelope residual",outside,"handle volume",handle.Volume(),"envelope volume",handle_closed_envelope.Volume(),flush=True)
         assert outside<.002,("handle envelope containment",outside)
-        handle_envelope=cylindrical_slab(rectangle(100.6,center-13.3,center+13.3+travel),
-            frame,r-40.2,40.4,r)
+        handle_envelope=annular_sector(frame,100.6,center-13.3,center+13.3+travel,r-40.2,r+.2,r)
         print("Check continuous swept envelopes",i,flush=True)
         checks={}
         for name,a,b in [("panel/cup",panel,cup),("panel/shade_sweep",panel,shade_envelope),

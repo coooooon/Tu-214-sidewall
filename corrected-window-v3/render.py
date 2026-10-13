@@ -46,15 +46,27 @@ def sections(panel,frame):
              cq.Plane(origin=tuple(frame.point(0,40,0)),xDir=(1,0,0),normal=tuple(frame.up)),
              [0,2],(-210,210),(-55,115),("Ширина от центра окна, мм","Глубина от R1735, мм"))]
     for name,title,plane,axes,xlim,ylim,labels in planes:
-        fig,ax=plt.subplots(figsize=(10,10 if "vertical" in name else 6),facecolor="white")
-        for label,shape,color in parts:
-            cs=section_curves(shape,plane,frame,axes) if label!="Ручка" or "vertical" in name else []
-            for k,c in enumerate(cs):ax.plot(c[:,0],c[:,1],color=color,lw=1.7,label=label if k==0 else None)
-        ax.set_xlim(*xlim);ax.set_ylim(*ylim);ax.set_aspect("equal")
-        ax.set_xlabel(labels[0]);ax.set_ylabel(labels[1]);ax.grid(alpha=.16);ax.legend(loc="best")
-        ax.set_title(title+"\nЧастично опущенная шторка между панелью и чашкой",fontsize=14)
-        fig.text(.1,.025,"Панель — исходная геометрия. Сечения получены булевым пересечением с плоскостями.",fontsize=9)
-        fig.tight_layout(rect=(0,.05,1,1));fig.savefig(OUT/name,dpi=155);plt.close(fig)
+        fig=plt.figure(figsize=(12,10) if "vertical" in name else (10,6),facecolor="white")
+        if "vertical" in name:
+            full=fig.add_axes([.06,.12,.34,.78])
+            zoom=fig.add_axes([.52,.18,.42,.68])
+            allaxes=[full,zoom]
+            limits=[((-220,140),(-570,710)),((-35,120),(-240,250))]
+        else:
+            full=fig.add_axes([.09,.18,.88,.68]);allaxes=[full];limits=[(xlim,ylim)]
+        for ax,(xl,yl) in zip(allaxes,limits):
+            for label,shape,color in parts:
+                cs=section_curves(shape,plane,frame,axes) if label!="Ручка" or "vertical" in name else []
+                for k,c in enumerate(cs):ax.plot(c[:,0],c[:,1],color=color,lw=1.7,label=label if k==0 else None)
+            ax.set_xlim(*xl);ax.set_ylim(*yl);ax.set_aspect("equal")
+            ax.set_xlabel(labels[0]);ax.set_ylabel(labels[1]);ax.grid(alpha=.16)
+        allaxes[-1].legend(loc="best")
+        if len(allaxes)==2:
+            full.set_title("Вся сборка / исходная панель целиком",fontsize=10)
+            zoom.set_title("Оконная зона / увеличено",fontsize=10)
+        fig.suptitle(title+"\nЧастично опущенная шторка между панелью и чашкой",fontsize=14)
+        fig.text(.08,.035,"Сечения получены булевым пересечением экспортированных BRep-деталей с плоскостями.",fontsize=9)
+        fig.savefig(OUT/name,dpi=155);plt.close(fig)
 
 def cup_front(panel,frame,cup_mesh):
     front=-frame.n
