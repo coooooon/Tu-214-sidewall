@@ -11,6 +11,9 @@ import numpy as np
 import cadquery as cq
 from OCP.BRepBuilderAPI import BRepBuilderAPI_Sewing, BRepBuilderAPI_MakeEdge
 from OCP.TopoDS import TopoDS
+from OCP.BRepBndLib import BRepBndLib
+from OCP.Bnd import Bnd_Box
+from types import SimpleNamespace
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parent
@@ -100,6 +103,13 @@ def build_shade(frame):
     outline=rounded_rectangle(P["shade_width_mm"],P["shade_height_mm"],45,12,center_s=center)
     return cylindrical_slab(outline,frame,P["shade_radius_mm"],P["shade_thickness_mm"])
 
+def exact_bounds(shape):
+    box=Bnd_Box()
+    BRepBndLib.AddOptimal_s(shape.wrapped,box,False,False)
+    xmin,ymin,zmin,xmax,ymax,zmax=box.Get()
+    return SimpleNamespace(xmin=xmin,ymin=ymin,zmin=zmin,xmax=xmax,ymax=ymax,zmax=zmax,
+                           xlen=xmax-xmin,ylen=ymax-ymin,zlen=zmax-zmin)
+
 def affine(shape, rows):
     return shape.transformGeometry(cq.Matrix(rows))
 
@@ -122,7 +132,7 @@ def build_handle():
         piece.Segment(float(lo),float(hi))
         pieces.append(cq.Edge(BRepBuilderAPI_MakeEdge(piece).Edge()))
     wire=cq.Wire.assembleEdges(pieces)
-    bb=wire.BoundingBox()
+    bb=exact_bounds(wire)
     sx,sy=100/bb.xlen,40/bb.ylen
     wire=affine(wire,[[sx,0,0,-sx*(bb.xmin+bb.xmax)/2],
                       [0,sy,0,-sy*bb.ymax],[0,0,1,0],[0,0,0,1]])
@@ -141,7 +151,7 @@ def build_handle():
         except Exception as error:
             print("Handle fillet retry",radius,type(error).__name__,flush=True)
     if not filleted: print("Handle: smooth planform, intersection edges retained",flush=True)
-    bb=grip.BoundingBox()
+    bb=exact_bounds(grip)
     sx,sy,sz=100/bb.xlen,40/bb.ylen,25/bb.zlen
     grip=affine(grip,[[sx,0,0,-sx*(bb.xmin+bb.xmax)/2],
                      [0,sy,0,-sy*bb.ymax],[0,0,sz,-sz*(bb.zmin+bb.zmax)/2],[0,0,0,1]])
@@ -160,7 +170,7 @@ def mount_handle(canonical,frame):
     # Integral small mounting land at the blade's lower edge. Its back face
     # is exactly R1761 and touches the shade without entering its volume.
     outline=rounded_rectangle(20,2,.4,center_s=P["shade_closed_lower_edge_mm"]+2)
-    land=cylindrical_slab(outline,frame,P["shade_radius_mm"]-.3,.3,P["shade_radius_mm"])
+    land=cylindrical_slab(outline,frame,P["shade_radius_mm"]-1.5,1.5,P["shade_radius_mm"])
     mounted=mounted.fuse(land).fix()
     print("Mounted handle",mounted.isValid(),len(mounted.Solids()),mounted.Volume(),flush=True)
     assert mounted.isValid() and len(mounted.Solids())==1
