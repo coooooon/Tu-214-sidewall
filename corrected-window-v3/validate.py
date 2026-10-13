@@ -6,7 +6,7 @@ import cadquery as cq
 from OCP.BRepAdaptor import BRepAdaptor_Surface
 from OCP.gp import gp_Pnt,gp_Vec
 from OCP.BRepExtrema import BRepExtrema_DistShapeShape
-from build import P,ROOT,CAD,SOURCE,frames_from_panel,extract_throat,curve_data,rows_data,exact_bounds
+from build import P,ROOT,CAD,SOURCE,frames_from_panel,extract_throat,curve_data,rows_data,exact_bounds,mesh_bounds
 from cylindrical_parts import cylindrical_slab,move_on_cylinder
 from profile_geometry import Bezier
 from preserve_step_panel import records,references,TOKEN
@@ -104,7 +104,7 @@ def main():
         assert digest_geometry(items,panel_representation(items))==reference
         report["assemblies"].append({"file":path.name,"valid_solids":7,"panel_geometry_identical":True})
     canonical=load("handle")
-    bb=exact_bounds(canonical)
+    bb=mesh_bounds(canonical)
     dims=[bb.xlen,bb.ylen,bb.zlen]
     assert np.allclose(dims,[100,40,25],atol=.015),dims
     report["handle_dimensions_mm"]=dims

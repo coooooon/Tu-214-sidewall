@@ -111,6 +111,13 @@ def exact_bounds(shape):
     return SimpleNamespace(xmin=xmin,ymin=ymin,zmin=zmin,xmax=xmax,ymax=ymax,zmax=zmax,
                            xlen=xmax-xmin,ylen=ymax-ymin,zlen=zmax-zmin)
 
+def mesh_bounds(shape):
+    vertices,_=shape.tessellate(.002,.015)
+    pts=np.array([v.toTuple() for v in vertices])
+    xmin,ymin,zmin=pts.min(axis=0);xmax,ymax,zmax=pts.max(axis=0)
+    return SimpleNamespace(xmin=xmin,ymin=ymin,zmin=zmin,xmax=xmax,ymax=ymax,zmax=zmax,
+                           xlen=xmax-xmin,ylen=ymax-ymin,zlen=zmax-zmin)
+
 def affine(shape, rows):
     return shape.transformGeometry(cq.Matrix(rows))
 
@@ -152,7 +159,8 @@ def build_handle():
         except Exception as error:
             print("Handle fillet retry",radius,type(error).__name__,flush=True)
     if not filleted: print("Handle: smooth planform, intersection edges retained",flush=True)
-    bb=exact_bounds(grip)
+    bb=mesh_bounds(grip)
+    print("Handle geometric versus mesh bounds",vars(exact_bounds(grip)),vars(bb),flush=True)
     sx,sy,sz=100/bb.xlen,40/bb.ylen,25/bb.zlen
     grip=affine(grip,[[sx,0,0,-sx*(bb.xmin+bb.xmax)/2],
                      [0,sy,0,-sy*bb.ymax],[0,0,sz,-sz*(bb.zmin+bb.zmax)/2],[0,0,0,1]])

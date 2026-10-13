@@ -15,11 +15,11 @@
   "shade_width_mm": 322,
   "shade_height_mm": 432,
   "shade_closed_lower_edge_mm": -183,
-  "shade_open_lower_edge_mm": 205,
-  "shade_open_travel_mm": 388,
+  "shade_open_lower_edge_mm": 197,
+  "shade_open_travel_mm": 380,
   "handle_width_mm": 100,
   "handle_depth_mm": 40,
   "handle_height_mm": 25,
-  "handle_center_from_shade_lower_edge_mm": -8,
+  "handle_center_from_shade_lower_edge_mm": 0,
   "collision_positions": 21
 }

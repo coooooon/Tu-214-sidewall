@@ -145,7 +145,7 @@ def main():
     img=rasterize(wm,1050,1300,[.28,-.94,.16],frame.origin,(380,500),True,1450)
     save_image(img,"window_perspective.png","Оконный узел / перспектива","Внутренние боковые стенки чашки плавно сужаются к оконному блоку.")
     img=rasterize(hm,1050,1300,[.2,-.96,.12],frame.origin,(380,500),True,1450)
-    save_image(img,"shade_half_closed.png","Частично опущенная шторка","194 мм хода по дуге; жёсткая цилиндрическая пластина сохраняет радиус.")
+    save_image(img,"shade_half_closed.png","Частично опущенная шторка","190 мм хода по дуге; жёсткая цилиндрическая пластина сохраняет радиус.")
     print("Render actual BRep sections",flush=True)
     sections(panel,frame);handle_views()
     checksums={}
