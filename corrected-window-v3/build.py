@@ -122,7 +122,7 @@ def build_handle():
     # Side silhouette is symmetric in height only and tapers toward the grip.
     points=[cq.Vector(-60,y,z) for y,z in [(-45,-5.75),(5,-13.25),(5,13.25),(-45,5.75)]]
     wedge=cq.Solid.extrudeLinear(cq.Wire.makePolygon(points,close=True),[],cq.Vector(120,0,0))
-    grip=lens.intersect(top).intersect(wedge).clean()
+    grip=lens.intersect(top).intersect(wedge).fix()
     assert grip.isValid() and len(grip.Solids())==1
     filleted=False
     for radius in (.6,.3,.12):
@@ -151,7 +151,7 @@ def mount_handle(canonical,frame):
     # A matching cylindrical mounting face touches the blade without overlap.
     inside=cq.Solid.makeCylinder(P["shade_radius_mm"],120,
              cq.Vector(frame.cx-60,frame.cy,frame.cz),cq.Vector(1,0,0))
-    mounted=mounted.intersect(inside).clean()
+    mounted=mounted.intersect(inside).fix()
     assert mounted.isValid() and len(mounted.Solids())==1
     return mounted
 
