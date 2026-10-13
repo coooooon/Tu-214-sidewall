@@ -1,7 +1,7 @@
 {
   "source_sha256": "370fe795332fc1ff231cc2dd068df0051266bb9e5ab8a86258c18059c9a0160d",
   "panel_volume_mm3": 4129744.493924135,
-  "handle_edges_filleted": true,
+  "handle_edges_filleted": false,
   "assemblies": [
     {
       "position": "open",

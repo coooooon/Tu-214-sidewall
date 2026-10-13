@@ -1,74 +1,74 @@
 {
   "cad/assembly_closed.step": {
-    "bytes": 10567384,
-    "sha256": "119802fc2171a2dd7c08609f7c85b7f0737b74e3289398371a31696f63ec7cb2"
+    "bytes": 8259389,
+    "sha256": "02d6dab105be5a27759e3b0bbb21cc292d6c45bb8ba2f8144a02a56f53349e9f"
   },
   "cad/assembly_half.step": {
-    "bytes": 10567692,
-    "sha256": "ebc9b9efc381bdbec4c8f62edf15713e4a2b68f21bc3c86ddec50390ad984f77"
+    "bytes": 8259399,
+    "sha256": "0f3188a82c11d416da8dcf5c42052b111a0e79c2aec654b6f60588fee49f24aa"
   },
   "cad/assembly_open.step": {
-    "bytes": 10566776,
-    "sha256": "78857e8e82a5ea71fe5211ea7157f10347fd24ee7e961b28ca1fd614111c4182"
+    "bytes": 8260272,
+    "sha256": "8dca74a13cf2f8e46d5590322615e31a61e2ecd003f52fade6e79167f5643ae5"
   },
   "cad/cup_1.step": {
     "bytes": 2025540,
-    "sha256": "b6d5fd55270fab11cb2abf867e4610b8f4b9049e34934381fb512d67a3352e69"
+    "sha256": "65a8ea5181ddada4e39084d437c9a6f929ef8abe5036243523820527d9ea9878"
   },
   "cad/cup_2.step": {
     "bytes": 2025015,
-    "sha256": "55ca57a6b3578a8c2dfa57f9c1e5c63f03d3d70fddd2d09bca4c2035f4b05eb1"
+    "sha256": "6d90491baf580f909f6ac256c117399adc66522147cd7324ea9ad9525106c069"
   },
   "cad/handle.step": {
-    "bytes": 1482201,
-    "sha256": "2fe11c6bb899f7b29c27ff20c17560edc898aad52417f078f78fa88235f2a97f"
+    "bytes": 333775,
+    "sha256": "af4c7d6db7a25e32170ff2d9b2ff877ebd190f22633351484b3a1adcd8664008"
   },
   "cad/handle_1_closed.step": {
-    "bytes": 1547691,
-    "sha256": "48460b70f47cf193a1e9b01e57c78e7b76d366bb0b5b3318f3603bdbaa29a47e"
+    "bytes": 427699,
+    "sha256": "f796342f223f483c5c73e38389095057c408b72570881c0e1f9517c16782773e"
   },
   "cad/handle_1_half.step": {
-    "bytes": 1547734,
-    "sha256": "cfd77b993776d8c8c6e83f59db9098da6e25d541f8653ec15335ae6d0472cd8b"
+    "bytes": 427596,
+    "sha256": "03793429f5e7481c0d8f852238a56f3c518b2bb7751224837e8171f33d532113"
   },
   "cad/handle_1_open.step": {
-    "bytes": 1546827,
-    "sha256": "fe865d4a303e526d8daaf803bd00f53beffc268053e0f1d5817c879713d26273"
+    "bytes": 427579,
+    "sha256": "bc3da4c3a23401aa787d90bdc47e6f6056181171163730c46d6c3ae39ff283af"
   },
   "cad/handle_2_closed.step": {
-    "bytes": 1547384,
-    "sha256": "56925e2c10d9809b4e57c0832f41682ce9418056b4d8793e7d6437dd2ca98268"
+    "bytes": 427437,
+    "sha256": "b47c1aacbcde71e9df703836571914c532366b087ac90b089ecf323c7a455cdc"
   },
   "cad/handle_2_half.step": {
-    "bytes": 1547435,
-    "sha256": "68fdc398f0e0569e54d26747d44758cb21be12ecd345fd3e9e658332acef3932"
+    "bytes": 427329,
+    "sha256": "05198b9bd3dd2fb03c8b56b9099d595576fce2762cb76ec460bf0ac96d13d918"
   },
   "cad/handle_2_open.step": {
-    "bytes": 1546521,
-    "sha256": "9428d1746b2fa1cbb5a92bbe0ce944acbf1af2b2a52e120bcdefa4ef04351ea6"
+    "bytes": 427314,
+    "sha256": "af7956188d404bfa6826234b40d26cca3b8d63e081b0b31d249c5bbb727045c8"
   },
   "cad/shade_1_closed.step": {
     "bytes": 73250,
-    "sha256": "ed3763a54bea6339ef08159db8b7c823a71c855d7fabe3f878dd91bd768c50e5"
+    "sha256": "bb172c8ac801fd69ae506b973db3681ef8f8602f3373b44bae5c334b85acc154"
   },
   "cad/shade_1_half.step": {
     "bytes": 73360,
-    "sha256": "e2505365a0b501973946bd10b1d32103c48788e2affa7d30ce986f7e8e3a0b18"
+    "sha256": "6ab55dabb766be59a816849e898cdc57cd2833ce34a3a5232533210e8dff106c"
   },
   "cad/shade_1_open.step": {
     "bytes": 73828,
-    "sha256": "9d337cc10025f8b39547597f1b53c9e5eb4b4e4b5591946820cd629da7a58681"
+    "sha256": "82219e1ba083758c0301d0dd467859af906b0ea3dd2bdd046af190a0eff3e0a2"
   },
   "cad/shade_2_closed.step": {
     "bytes": 73221,
-    "sha256": "3ca49cf677aa7765ac613c128ccf235e284f08949bd89db36ba125bb749e8564"
+    "sha256": "8fd69490196690fef78a96e2a46289a988aa73715135bc44f459558800189de1"
   },
   "cad/shade_2_half.step": {
     "bytes": 73333,
-    "sha256": "d3e5ac54749e331b2ffe654d3747f7672437d3ceac8c055c3056829fc839e021"
+    "sha256": "5ffd8ae90156b4f031a0b8a725c49cace15eccd9e2f59103f295d7a99d1024f6"
   },
   "cad/shade_2_open.step": {
     "bytes": 73801,
-    "sha256": "59e998a34fc3171971bd6e6318986cc3863bee71e48d03cdb54e1779712c335e"
+    "sha256": "9af7ca5ddea3f39edd8f5e532bd6491fc449404c1777b287bdc7a0abc99e1e34"
   }
 }
