@@ -6,13 +6,18 @@ import cadquery as cq
 from OCP.BRepAdaptor import BRepAdaptor_Surface
 from OCP.gp import gp_Pnt,gp_Vec
 from OCP.BRepExtrema import BRepExtrema_DistShapeShape
-from build import P,ROOT,CAD,SOURCE,frames_from_panel,extract_throat,curve_data,rows_data,exact_bounds,mesh_bounds
-from cylindrical_parts import cylindrical_slab,move_on_cylinder
+from build import P,ROOT,CAD,SOURCE,frames_from_panel,extract_throat,curve_data,rows_data,exact_bounds,mesh_bounds,pure_solid
+from cylindrical_parts import cylindrical_slab as make_slab,move_on_cylinder
+from OCP.gp import gp_Pnt
 from profile_geometry import Bezier
 from preserve_step_panel import records,references,TOKEN
 
+def cylindrical_slab(*args):
+    return pure_solid(make_slab(*args))
+
 def load(name):
-    return cq.importers.importStep(str(CAD/f"{name}.step")).val()
+    shape=cq.importers.importStep(str(CAD/f"{name}.step")).val()
+    return pure_solid(shape) if len(shape.Solids())==1 else shape
 
 def digest_geometry(items,root):
     cache={}
@@ -38,7 +43,7 @@ def rectangle(width,low,high):
 def vol_intersection(a,b):
     intersection=a.intersect(b,tol=0.00001)
     assert intersection.isValid()
-    return max(0,float(intersection.Volume()))
+    return sum(max(0,float(s.Volume())) for s in intersection.Solids())
 
 def surface(face,u,v):
     p=gp_Pnt();du=gp_Vec();dv=gp_Vec()
@@ -132,7 +137,11 @@ def main():
         center=P["shade_closed_lower_edge_mm"]+P["handle_center_from_shade_lower_edge_mm"]
         handle_closed_envelope=cylindrical_slab(rectangle(100.6,center-13.3,center+13.3),
             frame,r-40.2,40.4,r)
-        outside=handle.cut(handle_closed_envelope,tol=.00001).Volume()
+        difference=handle.cut(handle_closed_envelope,tol=.00001)
+        outside=sum(max(0,float(s.Volume())) for s in difference.Solids())
+        a=frame.theta+center/r
+        witness=cq.Vector(frame.cx,frame.cy+(r-10)*math.cos(a),frame.cz+(r-10)*math.sin(a))
+        print("Envelope witness is inside",handle_closed_envelope.isInside(witness),"body inside witness",handle.isInside(witness),flush=True)
         print("Handle envelope residual",outside,"handle volume",handle.Volume(),"envelope volume",handle_closed_envelope.Volume(),flush=True)
         assert outside<.002,("handle envelope containment",outside)
         handle_envelope=cylindrical_slab(rectangle(100.6,center-13.3,center+13.3+travel),

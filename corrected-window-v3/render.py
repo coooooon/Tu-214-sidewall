@@ -107,8 +107,8 @@ def handle_views():
         ax.set_aspect("equal");ax.grid(alpha=.14);ax.set_title(title,fontsize=13)
         ax.set_xlabel(labels[0]);ax.set_ylabel(labels[1]);ax.legend(fontsize=8)
     axs[1,1].axis("off")
-    axs[1,1].text(0,.9,"Проверка по трём проекциям",fontsize=16,weight="bold")
-    axs[1,1].text(0,.72,"Спереди: две оси симметрии, линза.\nСбоку: симметрия по высоте, клин.\nСверху: симметрия по ширине;\nслабовыпуклая спинка и вогнутый захват.\n\nГабариты: 100 × 40 × 25 мм.\n\nПунктир — нормированный ручной перенос\nвидимых линий предоставленного эскиза,\nа не скан и не точный обмер.",fontsize=11,linespacing=1.6)
+    axs[1,1].text(0,.9,"Проверка по трём проекциям",fontsize=16,weight="bold",va="top")
+    axs[1,1].text(0,.72,"Спереди: две оси симметрии, линза.\nСбоку: симметрия по высоте, клин.\nСверху: симметрия по ширине;\nслабовыпуклая спинка и вогнутый захват.\n\nГабариты: 100 × 40 × 25 мм.\n\nПунктир — нормированный ручной перенос\nвидимых линий предоставленного эскиза,\nа не скан и не точный обмер.",fontsize=11,linespacing=1.6,va="top")
     fig.suptitle("Ручка шторки / ортогональные проекции и сравнение с эскизом",fontsize=17,weight="bold")
     fig.tight_layout(rect=(0,0,1,.94));fig.savefig(OUT/"handle_three_views.png",dpi=150);plt.close(fig)
     for name,direction in [("handle_front",(0,-1,0)),("handle_side",(1,0,0)),("handle_top",(0,0,1))]:

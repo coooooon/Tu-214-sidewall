@@ -14,6 +14,9 @@ from OCP.TopoDS import TopoDS
 from OCP.BRepBndLib import BRepBndLib
 from OCP.Bnd import Bnd_Box
 from OCP.BRepTools import BRepTools
+from OCP.BRepLib import BRepLib
+from OCP.BRepClass3d import BRepClass3d_SolidClassifier
+from OCP.TopAbs import TopAbs_OUT
 from OCP.BRepExtrema import BRepExtrema_DistShapeShape
 from types import SimpleNamespace
 
@@ -27,6 +30,16 @@ from preserve_step_panel import preserve_panel
 P = json.loads((ROOT / "parameters.json").read_text())
 CAD = ROOT / "cad"
 SOURCE = REPO / P["source_step"]
+
+def pure_solid(shape):
+    assert len(shape.Solids())==1
+    solid=cq.Solid(TopoDS.Solid_s(shape.Solids()[0].wrapped))
+    assert BRepLib.OrientClosedSolid_s(solid.wrapped)
+    infinity=BRepClass3d_SolidClassifier(solid.wrapped)
+    infinity.PerformInfinitePoint(.00001)
+    assert infinity.State()==TopAbs_OUT,"The material must be bounded"
+    assert solid.isValid() and solid.Shells()[0].Closed()
+    return solid
 
 def xyz_on_cylinder(frame, x, s, radius):
     a = frame.theta + s / radius
@@ -172,7 +185,7 @@ def build_handle():
     grip=affine(grip,[[sx,0,0,-sx*(bb.xmin+bb.xmax)/2],
                      [0,sy,0,-sy*bb.ymax],[0,0,sz,-sz*(bb.zmin+bb.zmax)/2],[0,0,0,1]])
     assert grip.isValid() and len(grip.Solids())==1
-    return grip,filleted
+    return pure_solid(grip),filleted
 
 def mount_handle(canonical,frame):
     s=P["shade_closed_lower_edge_mm"]+P["handle_center_from_shade_lower_edge_mm"]
@@ -196,15 +209,16 @@ def mount_handle(canonical,frame):
     mounted=mounted.fuse(land).fix()
     print("Mounted handle",mounted.isValid(),len(mounted.Solids()),mounted.Volume(),flush=True)
     assert mounted.isValid() and len(mounted.Solids())==1
-    return mounted
+    return pure_solid(mounted)
 
 def export(shape,name):
+    shape=pure_solid(shape)
     assert shape.isValid() and len(shape.Solids())==1,(name,"invalid solid")
     path=CAD/f"{name}.step"
     cq.exporters.export(shape,str(path),exportType="STEP")
     restored=cq.importers.importStep(str(path)).val()
     assert restored.isValid() and len(restored.Solids())==1,(name,"STEP round trip")
-    return restored
+    return pure_solid(restored)
 
 def main():
     CAD.mkdir(parents=True,exist_ok=True)
@@ -220,7 +234,7 @@ def main():
         print("Build cup",i,flush=True)
         cup=export(build_cup(panel,frame),f"cup_{i}")
         print("Build shade and handle",i,flush=True)
-        shade=build_shade(frame);handle=mount_handle(canonical,frame)
+        shade=pure_solid(build_shade(frame));handle=pure_solid(mount_handle(canonical,frame))
         parts.append((frame,cup,shade,handle))
     report={"source_sha256":P["source_sha256"],"panel_volume_mm3":panel.Volume(),
             "handle_edges_filleted":filleted,"assemblies":[]}
