@@ -1,0 +1,29 @@
+{
+  "source_sha256": "370fe795332fc1ff231cc2dd068df0051266bb9e5ab8a86258c18059c9a0160d",
+  "source_valid": true,
+  "source_solid_count": 1,
+  "source_volume_mm3": 4129744.493924135,
+  "window_axis_y_mm": -1667.74165925,
+  "window_axis_z_mm": 354.489432844,
+  "original_main_panel_radius_mm": 1705,
+  "window_floor_radius_mm": 1735.0,
+  "existing_throat_radius_mm": 1753,
+  "front_contour_width_height_developed_mm": [
+    299.98822861079526,
+    422.5468230883745
+  ],
+  "proposed_independent_B_width_height_mm": [
+    296.0,
+    360.0
+  ],
+  "B_upper_corner_radius_mm": 100.0,
+  "B_lower_corner_radius_mm": 108.0,
+  "B_side_radius_mm": 1800.0,
+  "B_top_crown_radius_mm": 720.0,
+  "B_bottom_crown_radius_mm": 540.0,
+  "B_G2_transition_length_mm": 8,
+  "B_min_signed_curvature_per_mm": 0.0002693250541062021,
+  "B_vs_scaled_A_best_scale": 0.9062277069237016,
+  "B_vs_scaled_A_max_difference_mm": 15.379369582947845,
+  "radius_requirement_conflict": "R < 1705 is inboard of the panel; a concentric shade behind the reveal must be outside the existing throat R1753."
+}

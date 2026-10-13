@@ -1,0 +1,2 @@
+*.step -diff -text
+*.stp -diff -text

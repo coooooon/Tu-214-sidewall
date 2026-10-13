@@ -1,0 +1,10 @@
+{
+  "estimated_rear_width_height_radius_mm": [
+    295.99999999999994,
+    350.59258133117373,
+    1808.4940849261307
+  ],
+  "inner_trace_rms_pixels": 11.10861434440757,
+  "camera_fixed_from_three_outer_contours": true,
+  "rear_width_upper_bound_reason": "4 mm below the supplied 300 mm throat; preserve passage through the existing mouth"
+}

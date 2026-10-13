@@ -1,0 +1,74 @@
+{
+  "source_sha256": "370fe795332fc1ff231cc2dd068df0051266bb9e5ab8a86258c18059c9a0160d",
+  "panel_geometry_reference_hash": "203d8bbe3fa357f790e7874db93935d54b1aa61057e8669ee2409cb8f8deb85f",
+  "assemblies": [
+    {
+      "file": "tu214_sidewall_complete.step",
+      "geometry_hash_matches_original": true,
+      "sha256": "cb8c127211aa58692286933365b785905d3c88362af65edf2ca075f8f7b1e37f"
+    },
+    {
+      "file": "tu214_sidewall_half_closed.step",
+      "geometry_hash_matches_original": true,
+      "sha256": "368838efba4f3a1c1c6ea17189893526ccd25eff428ecc4cc0e372cce590b13b"
+    },
+    {
+      "file": "tu214_sidewall_closed.step",
+      "geometry_hash_matches_original": true,
+      "sha256": "32f0e8700da6ac98eb60d5984de906d5d75d5a575d15f968c353a097a832cce6"
+    }
+  ],
+  "windows": [
+    {
+      "window": 1,
+      "max_front_contour_error_mm": 4.069558495338635e-06,
+      "max_rear_radius_error_mm": 3.494176326057641e-07,
+      "max_panel_joint_normal_angle_deg": 0.020952573574975018,
+      "max_reveal_seam_normal_angle_deg": 0.0022026243191271516,
+      "min_normal_wall_thickness_mm": 1.9142213896632059,
+      "max_normal_wall_thickness_mm": 3.000202311713797,
+      "min_surface_area_jacobian": 117.80806987216485,
+      "min_polar_radial_jacobian": 0.6302940189378058,
+      "shade_inner_outer_radii_mm": [
+        1827.0,
+        1828.8
+      ],
+      "shade_concentric_with_panel": true,
+      "closed_aperture_coverage_samples": 2416,
+      "closed_aperture_covered": true,
+      "handle_shade_intersection_mm3": 0.0,
+      "reveal_radial_control_hull_bound_mm": 1820.0007136047625,
+      "handle_reveal_min_clearance_bound_mm": 1.4992863952375046
+    },
+    {
+      "window": 2,
+      "max_front_contour_error_mm": 4.325927638636776e-06,
+      "max_rear_radius_error_mm": 3.4941854210046586e-07,
+      "max_panel_joint_normal_angle_deg": 0.01951718495730658,
+      "max_reveal_seam_normal_angle_deg": 0.002256024607503158,
+      "min_normal_wall_thickness_mm": 1.914221389660897,
+      "max_normal_wall_thickness_mm": 3.0002023117214183,
+      "min_surface_area_jacobian": 117.80134136458031,
+      "min_polar_radial_jacobian": 0.630257965249034,
+      "shade_inner_outer_radii_mm": [
+        1827.0,
+        1828.8
+      ],
+      "shade_concentric_with_panel": true,
+      "closed_aperture_coverage_samples": 2416,
+      "closed_aperture_covered": true,
+      "handle_shade_intersection_mm3": 0.0,
+      "reveal_radial_control_hull_bound_mm": 1820.0007135833741,
+      "handle_reveal_min_clearance_bound_mm": 1.4992864166258641
+    }
+  ],
+  "clearances_mm": {
+    "cup_to_window_block_reference": 15.0,
+    "cup_to_shade_front": 7.0,
+    "shade_back_to_window_block_reference": 6.2,
+    "guide_front_lip_to_shade": 3.7000000000000455,
+    "shade_to_guide_rear_lip": 3.9000000000000457,
+    "shade_side_to_guide_web": 2.0
+  },
+  "all_geometry_checks_passed": true
+}

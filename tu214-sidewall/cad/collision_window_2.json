@@ -1,0 +1,54 @@
+{
+  "window": 2,
+  "checks": [
+    {
+      "pair": "panel/reveal",
+      "intersection_mm3": 0.0,
+      "intersection_valid": true
+    },
+    {
+      "pair": "panel/shade_full_sweep",
+      "intersection_mm3": 0.0,
+      "intersection_valid": true
+    },
+    {
+      "pair": "panel/handle_full_sweep",
+      "intersection_mm3": 0.0,
+      "intersection_valid": true
+    },
+    {
+      "pair": "panel/guide_1",
+      "intersection_mm3": 0.0,
+      "intersection_valid": true
+    },
+    {
+      "pair": "guide_1/shade_full_sweep",
+      "intersection_mm3": 0.0,
+      "intersection_valid": true
+    },
+    {
+      "pair": "panel/guide_2",
+      "intersection_mm3": 0.0,
+      "intersection_valid": true
+    },
+    {
+      "pair": "guide_2/shade_full_sweep",
+      "intersection_mm3": 0.0,
+      "intersection_valid": true
+    }
+  ],
+  "fuzzy_tolerance_mm": 5e-05,
+  "continuous_motion_checked_by_full_swept_envelopes": true,
+  "reveal_vs_shade_handle_guides_certified_by_radial_control_hull": true,
+  "reveal_radial_control_hull_bound_mm": 1820.0007135833741,
+  "handle_vs_guides_certified_by_disjoint_x_ranges": true,
+  "static_guide_max_inner_x_abs_mm": 152.0,
+  "handle_max_x_abs_mm": 82.0,
+  "part_sha256": {
+    "window_reveal_2": "41aa2976f2f0ecac3cd3e4999b909f7bf92bffc893967dcdc79cb2c2fbac3edd",
+    "window_shade_2_closed": "53a544d37cbff915f01181a1fe6adacf12b17202100fd21623b71ca91ba82027",
+    "shade_handle_2_closed": "322d86fd901bd6d1b010c37870f278416d430e6d0b68df68309516365a7947db",
+    "shade_guide_2_left": "9aee3b8fae7a80398b024afdd05dd271ba9f78795e06069fdf41ab520a26e047",
+    "shade_guide_2_right": "1a9b832cd1b8f8ba672140f82a88e5359311e9fdd41a72a3474a171be294377a"
+  }
+}

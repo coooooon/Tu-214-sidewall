@@ -1,0 +1,234 @@
+{
+  "original_sha256": "370fe795332fc1ff231cc2dd068df0051266bb9e5ab8a86258c18059c9a0160d",
+  "all_geometry_checks_passed": true,
+  "collision_checks_passed": true,
+  "panel_preserved_in_all_three_assemblies": true,
+  "assemblies_solid_count": 11,
+  "files": {
+    ".gitattributes": {
+      "bytes": 37,
+      "sha256": "50f856109cd5767554f6bf4276f4c1e091c8b9fd342b3f763588c10ede4125be"
+    },
+    "README.md": {
+      "bytes": 18650,
+      "sha256": "14210668d36d75dd299dfc1c9a8624903b57c4e3dde0b794827add111c3033df"
+    },
+    "cad/base_analysis.json": {
+      "bytes": 1066,
+      "sha256": "b1a51d8ea96e5f9059994cb63da36c6bc59c981c6ffaec4eabd450cbb570b404"
+    },
+    "cad/build_validation.json": {
+      "bytes": 2659,
+      "sha256": "e1b0d95c121cbee6a1e1759e47e6b7d11485968aed4f66bcd2a46912d0b8b29b"
+    },
+    "cad/collision_window_1.json": {
+      "bytes": 1690,
+      "sha256": "bc5387f8c5c4f4089046f9cb6dc44429e11f9e34f856bfba06d6c4fdcf662a25"
+    },
+    "cad/collision_window_2.json": {
+      "bytes": 1690,
+      "sha256": "066e31cc0363ff43fda021c228df490e536b0c5985ac95968e3cffacfa2633b9"
+    },
+    "cad/geometry_validation.json": {
+      "bytes": 2890,
+      "sha256": "fd3721895e61430fbff1b26eeaf000ff06faa798b54f1aad924f289e96852f5e"
+    },
+    "cad/motion_envelope_handle_1.step": {
+      "bytes": 24042,
+      "sha256": "2f81492f852caff4216092759eafcf85fc3a46229092e1a7d4f1a79fd9f4cd4a"
+    },
+    "cad/motion_envelope_handle_2.step": {
+      "bytes": 23938,
+      "sha256": "e7dc26cdf5e0fc723189bd74389e9797614709446bdc55d01ed66fa061c4cb7d"
+    },
+    "cad/motion_envelope_shade_1.step": {
+      "bytes": 24082,
+      "sha256": "0386aa02aad72f924092d05d764e819912f57dda0d36b85ada4804f130895cb6"
+    },
+    "cad/motion_envelope_shade_2.step": {
+      "bytes": 23978,
+      "sha256": "7501363fbf9a3d4f2c93b6601abd01638b1cc35b777ff7293f755bf4cd83aabb"
+    },
+    "cad/reference_comparison.json": {
+      "bytes": 2667,
+      "sha256": "2a39508bc25823f8e8a7e3d25e348848a689a991d74b2127f40764585c558ab1"
+    },
+    "cad/reference_shape_estimate.json": {
+      "bytes": 342,
+      "sha256": "856ffde5706da126ddb0e1d6e9afc0f6e4f45f7563a51e7c5efc05c77b06afe7"
+    },
+    "cad/shade_guide_1_left.step": {
+      "bytes": 208524,
+      "sha256": "01db194ca668bad9976721a2cd9c7ce96c29f84784dcc2af8de2c9f757cc04f3"
+    },
+    "cad/shade_guide_1_right.step": {
+      "bytes": 207725,
+      "sha256": "883e484e96f5c900651f317f280f4610683d0afb7f1d6fb977964d445534c9d0"
+    },
+    "cad/shade_guide_2_left.step": {
+      "bytes": 207247,
+      "sha256": "9aee3b8fae7a80398b024afdd05dd271ba9f78795e06069fdf41ab520a26e047"
+    },
+    "cad/shade_guide_2_right.step": {
+      "bytes": 207641,
+      "sha256": "1a9b832cd1b8f8ba672140f82a88e5359311e9fdd41a72a3474a171be294377a"
+    },
+    "cad/shade_handle_1_closed.step": {
+      "bytes": 243591,
+      "sha256": "cac8bbc7d10634debecb9bd564819740cd80880ddb89160b0a62df616662a640"
+    },
+    "cad/shade_handle_1_half.step": {
+      "bytes": 243655,
+      "sha256": "cfe174975cd87484686ffb7af2c72f0683af216c64b401c1c7347cec039ad274"
+    },
+    "cad/shade_handle_1_open.step": {
+      "bytes": 243649,
+      "sha256": "6acd129cfd894fd73681443c47ac6b9839219d1ef35a15f37db7068ae53408dd"
+    },
+    "cad/shade_handle_2_closed.step": {
+      "bytes": 369055,
+      "sha256": "322d86fd901bd6d1b010c37870f278416d430e6d0b68df68309516365a7947db"
+    },
+    "cad/shade_handle_2_half.step": {
+      "bytes": 369169,
+      "sha256": "c80124844a78b8a06e20e4950c0b0bd06540a21619227ff9559ccdfa5d6c4583"
+    },
+    "cad/shade_handle_2_open.step": {
+      "bytes": 369178,
+      "sha256": "20f6d9790f4277040963d238808dbb25eb0582a6211766d364affab6edb661d4"
+    },
+    "cad/tu214_sidewall_closed.step": {
+      "bytes": 13577664,
+      "sha256": "32f0e8700da6ac98eb60d5984de906d5d75d5a575d15f968c353a097a832cce6"
+    },
+    "cad/tu214_sidewall_complete.step": {
+      "bytes": 13578777,
+      "sha256": "cb8c127211aa58692286933365b785905d3c88362af65edf2ca075f8f7b1e37f"
+    },
+    "cad/tu214_sidewall_half_closed.step": {
+      "bytes": 13577967,
+      "sha256": "368838efba4f3a1c1c6ea17189893526ccd25eff428ecc4cc0e372cce590b13b"
+    },
+    "cad/tu214_sidewall_original.step": {
+      "bytes": 2960622,
+      "sha256": "370fe795332fc1ff231cc2dd068df0051266bb9e5ab8a86258c18059c9a0160d"
+    },
+    "cad/window_reveal_1.step": {
+      "bytes": 4318355,
+      "sha256": "58a3b1b88d5b3862a83bf84082c4e99122634b49a8e1770d8c8c2ebf50592e59"
+    },
+    "cad/window_reveal_2.step": {
+      "bytes": 4317384,
+      "sha256": "41aa2976f2f0ecac3cd3e4999b909f7bf92bffc893967dcdc79cb2c2fbac3edd"
+    },
+    "cad/window_shade_1_closed.step": {
+      "bytes": 74760,
+      "sha256": "9c008e69c6cf75a92f9bd1363a6386084738ed33db9639c00b66d0f389876403"
+    },
+    "cad/window_shade_1_half.step": {
+      "bytes": 74820,
+      "sha256": "6c42b2c2012e66af3fc46dc5872b09b262db7b35b1a758f3f5fc0fdb3bf0877e"
+    },
+    "cad/window_shade_1_open.step": {
+      "bytes": 75202,
+      "sha256": "e17c8bdd1b76c9637ae670337b16449979a83a45a4c86d954505095688f450df"
+    },
+    "cad/window_shade_2_closed.step": {
+      "bytes": 74691,
+      "sha256": "53a544d37cbff915f01181a1fe6adacf12b17202100fd21623b71ca91ba82027"
+    },
+    "cad/window_shade_2_half.step": {
+      "bytes": 74749,
+      "sha256": "f93d0c74eb33e295a9c921bc25ba13221947ed641f546fb4fac64937179e1f6d"
+    },
+    "cad/window_shade_2_open.step": {
+      "bytes": 75133,
+      "sha256": "5ce57bcbfff5b61b66c0e53ba2ad05eb274da98d5ff47eb3480deea8edacd3f2"
+    },
+    "previews/base_analysis.png": {
+      "bytes": 184293,
+      "sha256": "a75c41d3367eb8b4e677c7f0f65d66a50074f2dc7fd25e2f4956a86d87f6e994"
+    },
+    "previews/front.png": {
+      "bytes": 183843,
+      "sha256": "3efc27ec764396fbe0d83f74a132ee8b9a5a19939d7cc37831aea1a9f16f3afc"
+    },
+    "previews/handle_detail.png": {
+      "bytes": 108281,
+      "sha256": "f0d8d5ba053769d60f37313c86778747c55cf5f72af7647c43dd53b55061d2d2"
+    },
+    "previews/perspective.png": {
+      "bytes": 236732,
+      "sha256": "4e4c0fdd4f7cfe32cf5dab8299d5d11653ccb797c52afbd29e05eca8a708dca1"
+    },
+    "previews/reference_comparison.png": {
+      "bytes": 626302,
+      "sha256": "ae112077d0cfb974ba83d72b944296dbb2eec4ae3e363c4c3996ec7c19190f6b"
+    },
+    "previews/shade_half_closed.png": {
+      "bytes": 189531,
+      "sha256": "def0dc75ce404cf5acce24923028c98611ebe269413b482a159fffa260ca1a8d"
+    },
+    "previews/vertical_section.png": {
+      "bytes": 210168,
+      "sha256": "7d7e081947752b2a0b9ad8036725d2ccc0674f4acb680b7755f05721d05acec1"
+    },
+    "references/18205_marked.png": {
+      "bytes": 778137,
+      "sha256": "c596f7af9ee214abfdce141b2b18287cc29e7aba321098ab899981333d770253"
+    },
+    "requirements.txt": {
+      "bytes": 90,
+      "sha256": "3a9b8adc6b2584d7379e8105ed8efdd6d4f20eb84a49c9a1895a76f51f34a55c"
+    },
+    "source/analyse_base.py": {
+      "bytes": 5066,
+      "sha256": "3a52ffcf28f8514ea878c9151a465c5a4ce60893224c256902504b7604ae0422"
+    },
+    "source/build.py": {
+      "bytes": 11195,
+      "sha256": "d510cb0d32b2346da8a8792030916235a660924b111e435fccfe4dde86136306"
+    },
+    "source/cylindrical_parts.py": {
+      "bytes": 3597,
+      "sha256": "bfe14b0cf3c8bff862006d28235e50a476ab06c5144bf4ad0619bf3186144edb"
+    },
+    "source/package.py": {
+      "bytes": 4445,
+      "sha256": "ac6cf296e7098e48ab3efc506f8e3ca40e2fe95d1005c1f0d2453558dbef5524"
+    },
+    "source/parameters.json": {
+      "bytes": 1407,
+      "sha256": "118a05a9d89dea89c496aa4c7ddc1a660342027ad51c06a3be6ccbadd398f78a"
+    },
+    "source/preserve_step_panel.py": {
+      "bytes": 4198,
+      "sha256": "631e336271069905047440d8e58c9c06c99e1decbcda04840c8cfa5f0f8c914b"
+    },
+    "source/preview_mesh.py": {
+      "bytes": 4279,
+      "sha256": "dfe650aaf1b038c052aa0583b3b80d62e6113dc716b08ba4d8adaf3582e1dff4"
+    },
+    "source/profile_geometry.py": {
+      "bytes": 5283,
+      "sha256": "07aa6fcfba0db825bd8dcd258d4dee9694f7c9fc9e65bddf1229b7531189911d"
+    },
+    "source/reference_check.py": {
+      "bytes": 8327,
+      "sha256": "869c797815bc6961455b46d4cf7aca855b331067ebcd1499e9df532473138902"
+    },
+    "source/render.py": {
+      "bytes": 7629,
+      "sha256": "7786b72e82b3e5ca81c30d3b6e80feab906e71c58dc7cc44ca0e93a1dc87aef5"
+    },
+    "source/validate.py": {
+      "bytes": 12001,
+      "sha256": "3c55dc68a59d0cf8388feb5dfb86612e325d82816ba2408e87c047fd2f1be54b"
+    },
+    "source/window_source.py": {
+      "bytes": 7520,
+      "sha256": "0a823054fe85e26601b2782803520a3a99178615e592d5e97160c4d8a5156bd7"
+    }
+  },
+  "geometry_report_sha256": "fd3721895e61430fbff1b26eeaf000ff06faa798b54f1aad924f289e96852f5e"
+}
