@@ -1,0 +1,34 @@
+{
+  "source_sha256": "370fe795332fc1ff231cc2dd068df0051266bb9e5ab8a86258c18059c9a0160d",
+  "panel_volume_mm3": 4129744.493924135,
+  "handle_edges_filleted": true,
+  "assemblies": [
+    {
+      "position": "open",
+      "valid": true,
+      "solids": 7,
+      "travel_mm": 380,
+      "panel_volume_difference_mm3": 0.0,
+      "original_geometry_records_preserved": 32754,
+      "original_geometry_values_unchanged": true
+    },
+    {
+      "position": "half",
+      "valid": true,
+      "solids": 7,
+      "travel_mm": 190.0,
+      "panel_volume_difference_mm3": 0.0,
+      "original_geometry_records_preserved": 32754,
+      "original_geometry_values_unchanged": true
+    },
+    {
+      "position": "closed",
+      "valid": true,
+      "solids": 7,
+      "travel_mm": 0,
+      "panel_volume_difference_mm3": 0.0,
+      "original_geometry_records_preserved": 32754,
+      "original_geometry_values_unchanged": true
+    }
+  ]
+}

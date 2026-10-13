@@ -1,0 +1,74 @@
+{
+  "cad/assembly_closed.step": {
+    "bytes": 10567384,
+    "sha256": "9c6333e8f91408e9b2bce2fb63f8220f416b9fb594bee2464084d9e89730bf4d"
+  },
+  "cad/assembly_half.step": {
+    "bytes": 10567692,
+    "sha256": "ff9a8d7c7c9334e9690b59b46be05659397c1ad9a6f19469f6eca1ccc5e3d344"
+  },
+  "cad/assembly_open.step": {
+    "bytes": 10566776,
+    "sha256": "07acb5b254341d9da04d4a8275bdad7d3e5601d13d5a78e11ed9f3c1644978b5"
+  },
+  "cad/cup_1.step": {
+    "bytes": 2025540,
+    "sha256": "4f108c5825c9f542e672b1ac230d899226b560c551c1a9759c4c1ae3bdbfe3d9"
+  },
+  "cad/cup_2.step": {
+    "bytes": 2025015,
+    "sha256": "6d80b588c38c491237aeb8d0327a69dd8c013131a79d6802d71e4b9ae85977c8"
+  },
+  "cad/handle.step": {
+    "bytes": 1482201,
+    "sha256": "fc656228dfc69c61cb44bd8806ce57bb985b76bbfd87c04347392c1b8162c1f7"
+  },
+  "cad/handle_1_closed.step": {
+    "bytes": 1547691,
+    "sha256": "fb6aeeca6a4488b66732b8751c3118460573e2f0c6c85ea07c1b8d370b207392"
+  },
+  "cad/handle_1_half.step": {
+    "bytes": 1547734,
+    "sha256": "bdcd0e0e4d6026886906cea5b1e6736e3c75742f75dbd22ac753f2f4fcd5ea6e"
+  },
+  "cad/handle_1_open.step": {
+    "bytes": 1546827,
+    "sha256": "af1a859edbb201b9e00601b70347c5a1f2cbead684aa87f567321ea5bd1fa64f"
+  },
+  "cad/handle_2_closed.step": {
+    "bytes": 1547384,
+    "sha256": "df98b5251b8a3cc855740aad2a75be341441eb2a5315c12071533197fc8fa78f"
+  },
+  "cad/handle_2_half.step": {
+    "bytes": 1547435,
+    "sha256": "9a737cf9dcb62c9da190909e7645e18165084d5598f7060e2064ea0e7b56d10b"
+  },
+  "cad/handle_2_open.step": {
+    "bytes": 1546521,
+    "sha256": "ec8a6b9e8cbb977b82a03494996796115d7f1d457627f602620908bf53ddb794"
+  },
+  "cad/shade_1_closed.step": {
+    "bytes": 73250,
+    "sha256": "6896cfbd32038c391c3e0b0a639efaff2eca6e921e8920f23be037807239e1e4"
+  },
+  "cad/shade_1_half.step": {
+    "bytes": 73360,
+    "sha256": "eda74397a9e700c925edce7028483c9d1e9f72e67ec684d72ebb94a0825ab5b8"
+  },
+  "cad/shade_1_open.step": {
+    "bytes": 73828,
+    "sha256": "950eb2e5300920f0fa234775ad24df4473ca7d385e35a85b99411d89461f0c9b"
+  },
+  "cad/shade_2_closed.step": {
+    "bytes": 73221,
+    "sha256": "599bbe3a7e8388cedbb70e5bf77f622bf5ca8100afa927414bafb364b6d33bc1"
+  },
+  "cad/shade_2_half.step": {
+    "bytes": 73333,
+    "sha256": "7f41fd8dcf6a52bd725e7b2259e8add132e051ec8471743ad62852d63c6d144d"
+  },
+  "cad/shade_2_open.step": {
+    "bytes": 73801,
+    "sha256": "045f4ee12fdcb43d25b65584c60642b5ce2d8fc3c8d20a76e500c58d2df91901"
+  }
+}
