@@ -151,15 +151,18 @@ def build_handle():
 def mount_handle(canonical,frame):
     s=P["shade_closed_lower_edge_mm"]+P["handle_center_from_shade_lower_edge_mm"]
     a=frame.theta+s/P["shade_radius_mm"]
-    c,ss=math.cos(a),math.sin(a)
-    matrix=cq.Matrix([[1,0,0,frame.cx],
-                     [0,c,-ss,frame.cy+P["shade_radius_mm"]*c],
-                     [0,ss,c,frame.cz+P["shade_radius_mm"]*ss],[0,0,0,1]])
-    mounted=canonical.transformGeometry(matrix)
-    # A matching cylindrical mounting face touches the blade without overlap.
-    inside=cq.Solid.makeCylinder(P["shade_radius_mm"],120,
-             cq.Vector(frame.cx-60,frame.cy,frame.cz),cq.Vector(1,0,0))
-    mounted=mounted.intersect(inside).fix()
+    # Use a native rigid rotation. A 0.05-mm seating allowance avoids a
+    # tangential Boolean trim across the lens's rounded upper edge.
+    r=P["shade_radius_mm"]-.05
+    mounted=canonical.rotate((0,0,0),(1,0,0),math.degrees(a)).translate(
+        (frame.cx,frame.cy+r*math.cos(a),frame.cz+r*math.sin(a)))
+    assert mounted.isValid() and len(mounted.Solids())==1
+    # Integral small mounting land at the blade's lower edge. Its back face
+    # is exactly R1761 and touches the shade without entering its volume.
+    outline=rounded_rectangle(20,2,.4,center_s=P["shade_closed_lower_edge_mm"]+2)
+    land=cylindrical_slab(outline,frame,P["shade_radius_mm"]-.3,.3,P["shade_radius_mm"])
+    mounted=mounted.fuse(land).fix()
+    print("Mounted handle",mounted.isValid(),len(mounted.Solids()),mounted.Volume(),flush=True)
     assert mounted.isValid() and len(mounted.Solids())==1
     return mounted
 
