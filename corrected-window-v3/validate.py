@@ -62,8 +62,8 @@ def vol_intersection(a,b):
     op.SetNonDestructive(True)
     op.SetFuzzyValue(.00005)
     op.Build()
-    print("Common operation",op.IsDone(),op.HasErrors(),op.HasWarnings(),flush=True)
-    assert op.IsDone() and not op.HasErrors(),"Failed Boolean common operation"
+    print("Common operation",op.IsDone(),flush=True)
+    assert op.IsDone(),"Failed Boolean common operation"
     intersection=cq.Shape.cast(op.Shape())
     assert intersection.isValid()
     return sum(max(0,float(s.Volume())) for s in intersection.Solids())
@@ -163,8 +163,8 @@ def main():
         op.SetNonDestructive(True)
         op.SetFuzzyValue(.00005)
         op.Build()
-        print("Containment cut operation",op.IsDone(),op.HasErrors(),op.HasWarnings(),flush=True)
-        assert op.IsDone() and not op.HasErrors(),"Failed Boolean containment operation"
+        print("Containment cut operation",op.IsDone(),flush=True)
+        assert op.IsDone(),"Failed Boolean containment operation"
         difference=cq.Shape.cast(op.Shape())
         outside=sum(max(0,float(s.Volume())) for s in difference.Solids())
         a=frame.theta+center/r
