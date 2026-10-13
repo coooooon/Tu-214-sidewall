@@ -1,6 +1,7 @@
 """Check delivered BReps, controlled sections and continuous motion envelopes."""
 from pathlib import Path
 import json,math,hashlib
+from dataclasses import replace
 import numpy as np
 import cadquery as cq
 from OCP.BRepAdaptor import BRepAdaptor_Surface
@@ -52,6 +53,23 @@ def annular_sector(frame,width,low,high,inner,outer,reference):
            cq.Edge.makeThreePointArc(p4,point(inner,am),p1)]
     wire=cq.Wire.assembleEdges(edges)
     return pure_solid(cq.Solid.extrudeLinear(wire,[],cq.Vector(width,0,0)))
+
+def handle_sweep(frame,center,travel):
+    # The lens bounds the whole handle: |z| <= H/2*(1-(2*x/W)^2).
+    # Ten X intervals give certified angular bounds without the excess
+    # upper corners of one large rectangle.
+    r=P["shade_radius_mm"];width=P["handle_width_mm"]
+    depth=P["handle_depth_mm"];height=P["handle_height_mm"]
+    bounds=np.linspace(-width/2-.1,width/2+.1,11)
+    sectors=[]
+    for lo,hi in zip(bounds[:-1],bounds[1:]):
+        lo-=.03;hi+=.03
+        near=0 if lo<=0<=hi else min(abs(lo),abs(hi))
+        h=height/2*max(0,1-(2*near/width)**2)
+        arc=r*math.atan2(h,r-depth-.2)+.15
+        shifted=replace(frame,cx=frame.cx+(lo+hi)/2)
+        sectors.append(annular_sector(shifted,hi-lo,center-arc,center+arc+travel,r-depth-.2,r+.2,r))
+    return pure_solid(sectors[0].fuse(*sectors[1:]).fix())
 
 def rectangle(width,low,high):
     x=width/2; pts=np.array([[-x,low],[x,low],[x,high],[-x,high]])
@@ -158,7 +176,7 @@ def main():
             P["shade_closed_lower_edge_mm"]+P["shade_height_mm"]+travel,
             r,r+P["shade_thickness_mm"],r)
         center=P["shade_closed_lower_edge_mm"]+P["handle_center_from_shade_lower_edge_mm"]
-        handle_closed_envelope=annular_sector(frame,100.6,center-13.3,center+13.3,r-40.2,r+.2,r)
+        handle_closed_envelope=handle_sweep(frame,center,0)
         op=BRepAlgoAPI_Cut(handle.wrapped,handle_closed_envelope.wrapped)
         op.SetNonDestructive(True)
         op.SetFuzzyValue(.00005)
@@ -172,7 +190,7 @@ def main():
         print("Envelope witness is inside",handle_closed_envelope.isInside(witness),"body inside witness",handle.isInside(witness),flush=True)
         print("Handle envelope residual",outside,"handle volume",handle.Volume(),"envelope volume",handle_closed_envelope.Volume(),flush=True)
         assert outside<.002,("handle envelope containment",outside)
-        handle_envelope=annular_sector(frame,100.6,center-13.3,center+13.3+travel,r-40.2,r+.2,r)
+        handle_envelope=handle_sweep(frame,center,travel)
         print("Check continuous swept envelopes",i,flush=True)
         checks={}
         for name,a,b in [("panel/cup",panel,cup),("panel/shade_sweep",panel,shade_envelope),
