@@ -13,6 +13,7 @@ from OCP.BRepBuilderAPI import BRepBuilderAPI_Sewing, BRepBuilderAPI_MakeEdge
 from OCP.TopoDS import TopoDS
 from OCP.BRepBndLib import BRepBndLib
 from OCP.Bnd import Bnd_Box
+from OCP.BRepExtrema import BRepExtrema_DistShapeShape
 from types import SimpleNamespace
 
 ROOT = Path(__file__).resolve().parent
@@ -171,6 +172,12 @@ def mount_handle(canonical,frame):
     # is exactly R1761 and touches the shade without entering its volume.
     outline=rounded_rectangle(20,2,.4,center_s=P["shade_closed_lower_edge_mm"]+2)
     land=cylindrical_slab(outline,frame,P["shade_radius_mm"]-1.5,1.5,P["shade_radius_mm"])
+    measure=BRepExtrema_DistShapeShape(mounted.wrapped,land.wrapped)
+    measure.Perform()
+    p1,p2=measure.PointOnShape1(1),measure.PointOnShape2(1)
+    print("Mount distance",measure.Value(),"body",p1.X(),p1.Y(),p1.Z(),"land",p2.X(),p2.Y(),p2.Z(),flush=True)
+    print("Canonical bounds",vars(exact_bounds(canonical)),"centroid",canonical.Center().toTuple(),flush=True)
+    print("Mount overlap",mounted.intersect(land).Volume(),flush=True)
     mounted=mounted.fuse(land).fix()
     print("Mounted handle",mounted.isValid(),len(mounted.Solids()),mounted.Volume(),flush=True)
     assert mounted.isValid() and len(mounted.Solids())==1
