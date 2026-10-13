@@ -1,0 +1,119 @@
+{
+  "source_sha256": "370fe795332fc1ff231cc2dd068df0051266bb9e5ab8a86258c18059c9a0160d",
+  "panel_geometry_hash": "203d8bbe3fa357f790e7874db93935d54b1aa61057e8669ee2409cb8f8deb85f",
+  "assemblies": [
+    {
+      "file": "assembly_open.step",
+      "valid_solids": 7,
+      "panel_geometry_identical": true
+    },
+    {
+      "file": "assembly_half.step",
+      "valid_solids": 7,
+      "panel_geometry_identical": true
+    },
+    {
+      "file": "assembly_closed.step",
+      "valid_solids": 7,
+      "panel_geometry_identical": true
+    }
+  ],
+  "cups": [
+    {
+      "window": 1,
+      "front_profile_error_mm": 9.063093723044904e-07,
+      "normal_wall_thickness_mm": [
+        1.9377865078157275,
+        2.8155956761284293
+      ],
+      "quadratic_depth_generators_no_inflection": true,
+      "shrinks_in_width_and_height": true,
+      "wall_faces": 32
+    },
+    {
+      "window": 2,
+      "front_profile_error_mm": 9.023905259092375e-07,
+      "normal_wall_thickness_mm": [
+        1.9377866498891074,
+        2.8155954129463194
+      ],
+      "quadratic_depth_generators_no_inflection": true,
+      "shrinks_in_width_and_height": true,
+      "wall_faces": 32
+    }
+  ],
+  "motion": [
+    {
+      "window": 1,
+      "shade_radii_mm": [
+        1761.0,
+        1762.8
+      ],
+      "concentric": true,
+      "full_motion_envelopes_checked": true,
+      "swept_intersections_mm3": {
+        "panel/cup": 0,
+        "panel/shade_sweep": 0,
+        "cup/shade_sweep": 0,
+        "panel/handle_sweep": 0,
+        "cup/handle_sweep": 0,
+        "shade/handle": 0
+      },
+      "minimum_clearances_mm": {
+        "panel/cup": 16.440599603983753,
+        "panel/shade_sweep": 7.907526650159515,
+        "cup/shade_sweep": 6.642915090593578
+      },
+      "open_and_half_confirmed": [
+        {
+          "travel_mm": 190.0,
+          "intersections_mm3": 0
+        },
+        {
+          "travel_mm": 380.0,
+          "intersections_mm3": 0
+        }
+      ]
+    },
+    {
+      "window": 2,
+      "shade_radii_mm": [
+        1761.0,
+        1762.8
+      ],
+      "concentric": true,
+      "full_motion_envelopes_checked": true,
+      "swept_intersections_mm3": {
+        "panel/cup": 0,
+        "panel/shade_sweep": 0,
+        "cup/shade_sweep": 0,
+        "panel/handle_sweep": 0,
+        "cup/handle_sweep": 0,
+        "shade/handle": 0
+      },
+      "minimum_clearances_mm": {
+        "panel/cup": 16.440600662643778,
+        "panel/shade_sweep": 7.90752695033999,
+        "cup/shade_sweep": 6.642917854793245
+      },
+      "open_and_half_confirmed": [
+        {
+          "travel_mm": 190.0,
+          "intersections_mm3": 0
+        },
+        {
+          "travel_mm": 380.0,
+          "intersections_mm3": 0
+        }
+      ]
+    }
+  ],
+  "handle_dimensions_mm": [
+    100.0000002,
+    40.000000805592705,
+    25.000000381668997
+  ],
+  "handle_volume_mm3": 51118.5482583306,
+  "handle_x_and_z_symmetry": true,
+  "all_checks_passed": true
+}

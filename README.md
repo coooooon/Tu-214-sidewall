@@ -1,13 +1,9 @@
-# Tu-214 sidewall v5 with window accessories
+# Ту-214 — исправленный оконный узел
 
-Ready STEP assembly: [sidewall.stp](artifacts/sidewall.stp).
-Downloadable ZIP containing the STEP: [sidewall.zip](artifacts/sidewall.zip).
-Preview: [preview.png](artifacts/preview.png).
+[Основная STEP-сборка](corrected-window-v3/cad/assembly_open.step) · [Частично опущенные шторки](corrected-window-v3/cad/assembly_half.step).
 
-The supplied v5 panel is unchanged. The assembly contains seven valid solids:
-one panel, two window cups, two raised shades and two handles. No component
-intersections were found. Cup front contours follow the actual supplied
-window edges; rear contours, depth, shades and handles are estimates from
-the cabin photographs. Units are millimetres.
+[Детали и воспроизводимый исходник](corrected-window-v3/) · [Проверочные изображения](corrected-window-v3/previews/) · [Размеры, проверки и допущения](corrected-window-v3/README.md).
 
-Checksums and file sizes are listed in artifacts/manifest.json.
+Исходная панель сохранена без изменения геометрии и без перезаписи исходного STEP. Новые чашки, цилиндрические шторки и ручки — отдельные твердотельные BRep-детали. Шторки расположены между панелью и чашками. Ручки построены по трём проекциям эскиза, номинальные габариты 100 × 40 × 25 мм.
+
+Численные результаты проверки STEP и движения находятся в [validation.json](corrected-window-v3/validation.json).
