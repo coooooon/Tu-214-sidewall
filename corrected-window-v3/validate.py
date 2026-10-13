@@ -88,6 +88,7 @@ def cup_check(panel,frame,i):
             "shrinks_in_width_and_height":True,"wall_faces":len(walls)}
 
 def main():
+    (ROOT/"validation.json").unlink(missing_ok=True)
     assert hashlib.sha256(SOURCE.read_bytes()).hexdigest()==P["source_sha256"]
     panel=cq.importers.importStep(str(SOURCE)).val()
     frames=frames_from_panel(panel)
