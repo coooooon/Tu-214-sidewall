@@ -6,6 +6,7 @@ import cadquery as cq
 from OCP.BRepAdaptor import BRepAdaptor_Surface
 from OCP.gp import gp_Pnt,gp_Vec
 from OCP.BRepExtrema import BRepExtrema_DistShapeShape
+from OCP.BRepAlgoAPI import BRepAlgoAPI_Cut, BRepAlgoAPI_Common
 from build import P,ROOT,CAD,SOURCE,frames_from_panel,extract_throat,curve_data,rows_data,exact_bounds,mesh_bounds,pure_solid
 from cylindrical_parts import cylindrical_slab as make_slab,move_on_cylinder
 from OCP.gp import gp_Pnt
@@ -57,7 +58,13 @@ def rectangle(width,low,high):
     return [Bezier(np.array([pts[i],pts[(i+1)%4]])) for i in range(4)]
 
 def vol_intersection(a,b):
-    intersection=a.intersect(b,tol=0.00001)
+    op=BRepAlgoAPI_Common(a.wrapped,b.wrapped)
+    op.SetNonDestructive(True)
+    op.SetFuzzyValue(.00005)
+    op.Build()
+    print("Common operation",op.IsDone(),op.HasErrors(),op.HasWarnings(),flush=True)
+    assert op.IsDone() and not op.HasErrors(),"Failed Boolean common operation"
+    intersection=cq.Shape.cast(op.Shape())
     assert intersection.isValid()
     return sum(max(0,float(s.Volume())) for s in intersection.Solids())
 
@@ -152,10 +159,16 @@ def main():
             r,r+P["shade_thickness_mm"],r)
         center=P["shade_closed_lower_edge_mm"]+P["handle_center_from_shade_lower_edge_mm"]
         handle_closed_envelope=annular_sector(frame,100.6,center-13.3,center+13.3,r-40.2,r+.2,r)
-        difference=handle.cut(handle_closed_envelope,tol=.00001)
+        op=BRepAlgoAPI_Cut(handle.wrapped,handle_closed_envelope.wrapped)
+        op.SetNonDestructive(True)
+        op.SetFuzzyValue(.00005)
+        op.Build()
+        print("Containment cut operation",op.IsDone(),op.HasErrors(),op.HasWarnings(),flush=True)
+        assert op.IsDone() and not op.HasErrors(),"Failed Boolean containment operation"
+        difference=cq.Shape.cast(op.Shape())
         outside=sum(max(0,float(s.Volume())) for s in difference.Solids())
         a=frame.theta+center/r
-        witness=cq.Vector(frame.cx,frame.cy+(r-10)*math.cos(a),frame.cz+(r-10)*math.sin(a))
+        witness=cq.Vector(frame.cx+7,frame.cy+(r-10)*math.cos(a)-3*math.sin(a),frame.cz+(r-10)*math.sin(a)+3*math.cos(a))
         print("Envelope witness is inside",handle_closed_envelope.isInside(witness),"body inside witness",handle.isInside(witness),flush=True)
         print("Handle envelope residual",outside,"handle volume",handle.Volume(),"envelope volume",handle_closed_envelope.Volume(),flush=True)
         assert outside<.002,("handle envelope containment",outside)

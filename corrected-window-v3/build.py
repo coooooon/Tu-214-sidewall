@@ -34,6 +34,8 @@ SOURCE = REPO / P["source_step"]
 def pure_solid(shape):
     assert len(shape.Solids())==1
     solid=cq.Solid(TopoDS.Solid_s(shape.Solids()[0].wrapped))
+    BRepTools.Clean_s(solid.wrapped)
+    BRepLib.SameParameter_s(solid.wrapped,.000001,True)
     assert BRepLib.OrientClosedSolid_s(solid.wrapped)
     infinity=BRepClass3d_SolidClassifier(solid.wrapped)
     infinity.PerformInfinitePoint(.00001)
@@ -178,7 +180,7 @@ def build_handle():
     assert quarter.isValid() and len(quarter.Solids())==1
     opposite_x=quarter.mirror("YZ")
     half=quarter.fuse(opposite_x).fix()
-    grip=half.fuse(half.mirror("XY")).fix()
+    grip=half.fuse(half.mirror("XY")).fix().clean()
     assert grip.isValid() and len(grip.Solids())==1
     bb=exact_bounds(grip)
     sx,sy,sz=100/bb.xlen,40/bb.ylen,25/bb.zlen
