@@ -35,10 +35,12 @@ def pure_solid(shape):
     assert len(shape.Solids())==1
     solid=cq.Solid(TopoDS.Solid_s(shape.Solids()[0].wrapped))
     BRepTools.Clean_s(solid.wrapped)
-    BRepLib.SameParameter_s(solid.wrapped,.000001,True)
-    assert BRepLib.OrientClosedSolid_s(solid.wrapped)
     infinity=BRepClass3d_SolidClassifier(solid.wrapped)
     infinity.PerformInfinitePoint(.00001)
+    if infinity.State()!=TopAbs_OUT:
+        assert BRepLib.OrientClosedSolid_s(solid.wrapped)
+        infinity=BRepClass3d_SolidClassifier(solid.wrapped)
+        infinity.PerformInfinitePoint(.00001)
     assert infinity.State()==TopAbs_OUT,"The material must be bounded"
     assert solid.isValid() and solid.Shells()[0].Closed()
     return solid
