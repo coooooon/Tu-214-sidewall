@@ -139,55 +139,32 @@ def affine(shape, rows):
     return shape.transformGeometry(cq.Matrix(rows))
 
 def build_handle():
-    # Front silhouette: two symmetric parabolic arcs, 100 x 25.
-    a=cq.Edge.makeBezier([cq.Vector(-50,-50,0),cq.Vector(0,-50,25),cq.Vector(50,-50,0)])
-    b=cq.Edge.makeBezier([cq.Vector(50,-50,0),cq.Vector(0,-50,-25),cq.Vector(-50,-50,0)])
-    lens=cq.Solid.extrudeLinear(cq.Wire.assembleEdges([a,b]),[],cq.Vector(0,55,0))
-    # Top silhouette: one shallow convex back and a pronounced concave grip.
-    pts=[(-50,-3),(-45,-1),(-25,-.2),(0,0),(25,-.2),(45,-1),(50,-3),
-         (49,-13),(45,-32),(36,-40),(25,-36.5),(0,-30),
-         (-25,-36.5),(-36,-40),(-45,-32),(-49,-13)]
-    edge=cq.Edge.makeSpline([cq.Vector(x,y,-20) for x,y in pts],periodic=True)
-    adaptor=edge._geomAdaptor()
-    curve=adaptor.Curve().Curve()
-    start,end=adaptor.FirstParameter(),adaptor.LastParameter()
-    pieces=[]
-    for lo,hi in zip(np.linspace(start,end,5)[:-1],np.linspace(start,end,5)[1:]):
-        piece=curve.Copy()
-        piece.Segment(float(lo),float(hi))
-        pieces.append(cq.Edge(BRepBuilderAPI_MakeEdge(piece).Edge()))
-    wire=cq.Wire.assembleEdges(pieces)
-    bb=exact_bounds(wire)
-    sx,sy=100/bb.xlen,40/bb.ylen
-    wire=affine(wire,[[sx,0,0,-sx*(bb.xmin+bb.xmax)/2],
-                      [0,sy,0,-sy*bb.ymax],[0,0,1,0],[0,0,0,1]])
-    top=cq.Solid.extrudeLinear(wire,[],cq.Vector(0,0,40))
-    # Side silhouette is symmetric in height only and tapers toward the grip.
-    points=[cq.Vector(-60,y,z) for y,z in [(-45,-5.75),(5,-13.25),(5,13.25),(-45,5.75)]]
-    wedge=cq.Solid.extrudeLinear(cq.Wire.makePolygon(points,close=True),[],cq.Vector(120,0,0))
-    grip=lens.intersect(top).intersect(wedge).fix()
-    assert grip.isValid() and len(grip.Solids())==1
-    filleted=False
-    for radius in (.6,.3,.12):
-        try:
-            candidate=cq.Workplane().newObject([grip]).edges().fillet(radius).val()
-            if candidate.isValid() and len(candidate.Solids())==1:
-                grip=candidate;filleted=True;print("Handle edge fillet",radius,flush=True);break
-        except Exception as error:
-            print("Handle fillet retry",radius,type(error).__name__,flush=True)
-    if not filleted: print("Handle: smooth planform, intersection edges retained",flush=True)
-    quarter=grip.intersect(cq.Solid.makeBox(65,60,25,cq.Vector(0,-50,0))).fix()
-    assert quarter.isValid() and len(quarter.Solids())==1
-    opposite_x=quarter.mirror("YZ")
-    half=quarter.fuse(opposite_x).fix()
-    grip=half.fuse(half.mirror("XY")).fix().clean()
-    assert grip.isValid() and len(grip.Solids())==1
-    bb=exact_bounds(grip)
-    sx,sy,sz=100/bb.xlen,40/bb.ylen,25/bb.zlen
-    grip=affine(grip,[[sx,0,0,-sx*(bb.xmin+bb.xmax)/2],
-                     [0,sy,0,-sy*bb.ymax],[0,0,sz,-sz*(bb.zmin+bb.zmax)/2],[0,0,0,1]])
-    assert grip.isValid() and len(grip.Solids())==1
-    return pure_solid(grip),filleted
+    # Directly controlled orthographic silhouettes. Six nonperiodic cubic
+    # Bezier edges define a symmetric convex back and a concave grip.
+    half=P["handle_width_mm"]/2
+    height=P["handle_height_mm"]
+    depth=P["handle_depth_mm"]
+    def point(x,y,z):
+        return cq.Vector(x*half/50,y*depth/40,z*height/25)
+    a=cq.Edge.makeBezier([point(-50,-45,0),point(0,-45,25),point(50,-45,0)])
+    b=cq.Edge.makeBezier([point(50,-45,0),point(0,-45,-25),point(-50,-45,0)])
+    lens=cq.Solid.extrudeLinear(cq.Wire.assembleEdges([a,b]),[],cq.Vector(0,50*depth/40,0))
+    controls=[
+        [(0,0),(25,0),(50,0),(50,-5)],
+        [(50,-5),(50,-25),(46,-40),(36,-40)],
+        [(36,-40),(26,-40),(18,-30),(0,-30)],
+        [(0,-30),(-18,-30),(-26,-40),(-36,-40)],
+        [(-36,-40),(-46,-40),(-50,-25),(-50,-5)],
+        [(-50,-5),(-50,0),(-25,0),(0,0)]]
+    edges=[cq.Edge.makeBezier([point(x,y,-20) for x,y in pts]) for pts in controls]
+    top=cq.Solid.extrudeLinear(cq.Wire.assembleEdges(edges),[],cq.Vector(0,0,40*height/25))
+    pts=[point(-55,y,z) for y,z in [(-45,-5.75),(5,-13.25),(5,13.25),(-45,5.75)]]
+    wedge=cq.Solid.extrudeLinear(cq.Wire.makePolygon(pts,close=True),[],cq.Vector(110*half/50,0,0))
+    grip=pure_solid(lens.intersect(top).intersect(wedge).fix())
+    dims=exact_bounds(grip)
+    print("Native handle dimensions",dims.xlen,dims.ylen,dims.zlen,flush=True)
+    assert np.allclose([dims.xlen,dims.ylen,dims.zlen],[2*half,depth,height],atol=.015)
+    return grip,False
 
 def mount_handle(canonical,frame):
     s=P["shade_closed_lower_edge_mm"]+P["handle_center_from_shade_lower_edge_mm"]
