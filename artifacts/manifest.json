@@ -1,0 +1,14 @@
+{
+  "sidewall.stp": {
+    "bytes": 10766863,
+    "sha256": "05eed6ec561209744f6f5cc71afb8b4f3bfda751640b4233fd98598d5d85c955"
+  },
+  "sidewall.zip": {
+    "bytes": 2894403,
+    "sha256": "f55267c7f42a2ba1b162f57cf8d3cbf078a7e074dd5aa7c034c7c21c45613705"
+  },
+  "preview.png": {
+    "bytes": 361614,
+    "sha256": "189da3af95bc6e7402ae39a8a696c86a8127ad75f01b19ea08fad0fcbca2cae8"
+  }
+}
