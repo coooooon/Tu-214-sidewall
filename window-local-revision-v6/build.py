@@ -31,7 +31,7 @@ base=v5.base;RF=v5.RF;RB=v5.RB;T=v5.T;R=v5.R
 D=json.loads((ROOT/"diagnostic.json").read_text());ARCS=v5.ARCS
 CFG={"baseline_commit":"4db64ea3848f3ec188f8cd6854606298099a5fad","mount_gap_mm":7.,
      "corner_follow_clearance_mm":1.0,"corner_sector_margin_rad":.04,
-     "local_depth_limit_radius_mm":RF+36.,"blend_y_start_mm":RF+5.,"blend_y_end_mm":RF+18.}
+     "local_depth_limit_radius_mm":RF+43.,"blend_y_start_mm":RF+5.,"blend_y_end_mm":RF+25.}
 (ROOT/"parameters.json").write_text(json.dumps(CFG,indent=2)+"\n")
 C=ARCS[3].center;A0=ARCS[3].a0;SPAN=ARCS[3].a1-A0
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
@@ -67,7 +67,7 @@ nv=len(vknots)-6;greville=np.array([vknots[i+1:i+6].mean() for i in range(nv)])
 def gfun(v):return smooth((v-ve)/(vs-ve))
 basis=BSpline.design_matrix(greville,vknots,5).toarray()
 gcoeff=np.linalg.solve(basis,gfun(greville));yc=Y0+DY*greville
-corner_surfaces={}
+corner_surfaces={};G1_ERRORS=[]
 def corner_surface(index):
     a=ARCS[index];rev=index in (1,5);us=np.linspace(0,1,41)
     vals=[]
@@ -89,6 +89,15 @@ def corner_surface(index):
         for j in range(nv):poles.SetValue(i+1,j+1,gp_Pnt(*spl.c[i,j]))
     from OCP.TColStd import TColStd_Array1OfInteger
     s=Geom_BSplineSurface(poles,array(uk.tolist()),array(vk.tolist()),array(um.tolist(),TColStd_Array1OfInteger),array(vm.tolist(),TColStd_Array1OfInteger),5,5,False,False)
+    from OCP.gp import gp_Vec
+    for t in (0.,1.):
+        ph=a.a0+sp*t
+        expected=np.array([math.cos(ph),v5.SLOPE,math.sin(ph)]);expected/=np.linalg.norm(expected)
+        for v in np.linspace(0,1,17):
+            p=gp_Pnt();du=gp_Vec();dv=gp_Vec();s.D1(t,float(v),p,du,dv)
+            normal=np.cross([du.X(),du.Y(),du.Z()],[dv.X(),dv.Y(),dv.Z()]);normal/=np.linalg.norm(normal)
+            G1_ERRORS.append(float(np.linalg.norm(normal-expected)))
+    assert max(G1_ERRORS)<1e-7,max(G1_ERRORS)
     corner_surfaces[index]=s;return s
 def inner_taper():
     faces=[];caps={0:[],1:[]}
@@ -207,10 +216,19 @@ def control_images(report,frames,blend_sig):
     _,pad=contact_data(h,frame);_,blade=contact_data(s,frame);edge=blade[:,1].min();pad[:,1]-=edge
     fig,ax=plt.subplots(figsize=(10,6),facecolor="white")
     ax.axhline(0,color="#445",lw=2,label="Нижняя кромка шторки")
+    # Entire handle projected onto developed shade coordinates, from the real STEP.
+    verts,tris=h.tessellate(.01,.04);p=np.array([v.toTuple() for v in verts])
+    hs=R*(np.arctan2(p[:,2]-frame.cz,p[:,1]-frame.cy)-frame.theta)-edge
+    from shapely.geometry import Polygon
+    from shapely import union_all
+    hp=np.column_stack((p[:,0]-frame.cx,hs))
+    poly=union_all([Polygon(hp[t]) for t in tris if Polygon(hp[t]).area>1e-6],grid_size=.001)
+    if poly.geom_type=="MultiPolygon":poly=max(poly.geoms,key=lambda v:v.area)
+    q=np.array(poly.exterior.coords);ax.fill(q[:,0],q[:,1],color="#e8ddbd",alpha=.7,label="Проекция ручки")
     ax.scatter(pad[:,0],pad[:,1],s=2,color="#e57819",label="Контур площадки из STEP")
     ax.annotate("",(0,0),(0,7),arrowprops={"arrowstyle":"<->","color":"#c53"})
     ax.text(2,3.5,"7 мм",va="center",color="#c53",fontsize=14)
-    ax.set_xlim(-25,25);ax.set_ylim(-2,13);ax.set_aspect("equal");ax.grid(alpha=.2);ax.legend(loc="upper right")
+    ax.set_xlim(-65,65);ax.set_ylim(-3,17);ax.set_aspect("equal");ax.grid(alpha=.2);ax.legend(loc="upper right")
     ax.set_xlabel("Поперёк шторки, мм");ax.set_ylabel("По поверхности шторки, мм")
     ax.set_title("Посадка ручки / развёртка цилиндрической поверхности R1761")
     fig.tight_layout();fig.savefig(OUT/"handle_mount_7mm.png",dpi=160);plt.close(fig)
@@ -229,7 +247,7 @@ def main():
     # This helper writes its comparison into v5 previews; do not save those changes.
     panel=cq.importers.importStep(str(base.SOURCE)).val();frames=base.frames_from_panel(panel)
     report={"baseline_commit":CFG["baseline_commit"],"corner_material_added_mm3":float(added.Volume()),"corner_material_removed_mm3":float(removed.Volume()),
-      "outside_local_regions_difference_mm3":[outside_a,outside_b],"cup_symmetry_difference_mm3":sym,"opening":opening,"handle_mount":[],"assembly_checks":[]}
+      "outside_local_regions_difference_mm3":[outside_a,outside_b],"cup_symmetry_difference_mm3":sym,"corner_G1_normal_residual":max(G1_ERRORS),"opening":opening,"handle_mount":[],"assembly_checks":[]}
     for i,frame in enumerate(frames,1):
         export(v5.to_world(result,frame),f"cup_{i}")
         oldh=cq.importers.importStep(str(OLD/f"cad/handle_{i}_closed.step")).val()
