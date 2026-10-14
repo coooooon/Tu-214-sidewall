@@ -119,6 +119,13 @@ def build_cup():
     print("Rear R7 selected edges",len(rear_edges),flush=True)
     rounded,back_signatures=fillet(rounded,10.-T,rear_edges)
     assert rounded.isValid() and len(rounded.Solids())==1
+    # Enforce exact manufacturing symmetry by mirroring one finished quadrant.
+    corner_sigs=[s for s in signatures if s[1]>20 and s[3]>50]
+    assert corner_sigs,("No upper-right R10 corner surface",signatures)
+    quadrant=base.pure_solid(rounded.intersect(cq.Solid.makeBox(500,400,400,cq.Vector(0,1600,0))).fix())
+    upper=base.pure_solid(quadrant.fuse(quadrant.mirror("YZ")).fix())
+    rounded=base.pure_solid(upper.fuse(upper.mirror("XY")).fix())
+    signatures=[[s[0],sx*s[1],s[2],sz*s[3]] for s in corner_sigs for sx in (-1,1) for sz in (-1,1)]
     lip=lip_edges(rounded,RF)
     lip_offsets=[opening_offset(np.array(p.toTuple())[[0,2]]) for e in lip for p in e.positions(np.linspace(0,1,17))]
     outer_offset=CFG["mouth_offset_mm"]+CFG["flange_width_mm"]+CFG["fillet_radius_mm"]
