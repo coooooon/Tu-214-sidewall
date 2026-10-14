@@ -239,10 +239,10 @@
       0.6
     ],
     "previous_geometry_preserved": true,
-    "normalized_projection_errors_mm": {
-      "front": 0.031941508554101564,
-      "side": 3.8647052358491707,
-      "top": 11.913152385850925
+    "normalized_outer_silhouette_errors_mm": {
+      "front": 0.009508680537850894,
+      "side": 0.037598258761074914,
+      "top": 0.00437527692992416
     },
     "mount_offset_mm": 3
   },
