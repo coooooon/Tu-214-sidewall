@@ -1,0 +1,130 @@
+{
+  "cad/assembly_half.step": {
+    "bytes": 6253796,
+    "sha256": "879f21e0c672e9bb74ea0f97612a7eb810c50ef9d2e7f42080309bab821cb60a"
+  },
+  "cad/cup_local.step": {
+    "bytes": 1248874,
+    "sha256": "1ea8000cb784b29dca32bd81d9628bee0eb5d336a9b36974fd0075c72a3b0429"
+  },
+  "cad/assembly_open.step": {
+    "bytes": 6254780,
+    "sha256": "4b893069512ab337bd3c84dd2fedda4087e9cf7f6f8284b9b910b90d99c5cfba"
+  },
+  "cad/shade_2_half.step": {
+    "bytes": 73333,
+    "sha256": "cc401920b473522c0f3c32b1886c90993ea53df99b2053c4705c602a719c0c1d"
+  },
+  "cad/handle_1_half.step": {
+    "bytes": 235131,
+    "sha256": "14228a274fb8452835e07602124044f45b91acd62900dd34f929141b4b7e163b"
+  },
+  "cad/shade_1_open.step": {
+    "bytes": 73828,
+    "sha256": "8fa331dcf7daa0a88d2f35726187099442bf2e6743c7c4aef4cde7ad016c6882"
+  },
+  "cad/shade_2_open.step": {
+    "bytes": 73801,
+    "sha256": "5b56f6ef31f3b55a2a2a832df1c16ce73f58a5d5c0e4366b7f7d001988fe4e04"
+  },
+  "cad/shade_1_closed.step": {
+    "bytes": 73250,
+    "sha256": "e4fc24a8308865597d4e3000af99e85ac366b0b79972694ace4ea0137a1f1af3"
+  },
+  "cad/assembly_closed.step": {
+    "bytes": 6253532,
+    "sha256": "595dfe764958fe78400393e465ed8ffc775aa342c7f9887e3faea96956d21fb6"
+  },
+  "cad/handle_2_half.step": {
+    "bytes": 234930,
+    "sha256": "eeb57447241c8b56790c7d3c2654d400505045fbb5c9740422649c65c577a8fe"
+  },
+  "cad/shade_1_half.step": {
+    "bytes": 73360,
+    "sha256": "c98d081dc2c905be1814bfbe0e9d3f45797db3c76a006455b3ede63eef4a9cc0"
+  },
+  "cad/shade_2_closed.step": {
+    "bytes": 73221,
+    "sha256": "0df330e88aec502c36a41ce8795cd43807f6770b0245d18ef8cb8be82fe31a20"
+  },
+  "cad/cup_1.step": {
+    "bytes": 1232349,
+    "sha256": "7987613e075bae18d3a9ec02fa132e464d44ae1f94f02e6f045330086f936b7c"
+  },
+  "cad/handle_1_open.step": {
+    "bytes": 235160,
+    "sha256": "0d09529927578aedfe66148dc1605b5ec02ab8722abbbee6080e6a3a77b8a846"
+  },
+  "cad/cup_section.step": {
+    "bytes": 37094,
+    "sha256": "097c21e7b466dd60dc7e42174a5d0ae392a1f198c416cf03792331b9470bedf3"
+  },
+  "cad/cup_2.step": {
+    "bytes": 1230556,
+    "sha256": "9c92ae4f3697d0e921b60acc8fe8db729fc24cf1dd21ec9bf2caaae6d128c45f"
+  },
+  "cad/opening_contour.step": {
+    "bytes": 5517,
+    "sha256": "e4dda3602fc19d3ab8a31ee7bf7335a5c741bf2324564a37bae875d8ef792a5a"
+  },
+  "cad/handle_2_closed.step": {
+    "bytes": 234893,
+    "sha256": "99be15c61642f9376c58e5ad73e23f9244803f16138cfe7ecba382b63461b295"
+  },
+  "cad/handle_1_closed.step": {
+    "bytes": 235098,
+    "sha256": "31cc0fb2d5140563b70e124fbcbdb7c4a5c142f69f7a279ca9002143dcda4c06"
+  },
+  "cad/handle_2_open.step": {
+    "bytes": 234957,
+    "sha256": "53695f0bf1f240b1c8f8f4f0501f82af1c2c384940b2cb9d713a9156ebcaf864"
+  },
+  "cad/handle.step": {
+    "bytes": 151795,
+    "sha256": "b242c376867f56dce1b4065ec27b59017531192aab2ea6a1eedeae3e1377101c"
+  },
+  "previews/photo_assembly_compare.png": {
+    "bytes": 535562,
+    "sha256": "5e4692ee8b1baa7b44e45c84c2d2b256642c52ffd0e8083a47baddcdda59259c"
+  },
+  "previews/assembly_perspective.png": {
+    "bytes": 221036,
+    "sha256": "eadd0530a8f6fdea6e428e88bd48b7170a7d8b14b735a0527e9794f89ae9c148"
+  },
+  "previews/cup_section.png": {
+    "bytes": 68160,
+    "sha256": "012a00db697bf29d1ecc063306d9e327c14135b42669cb3f7e9041b66ff6282f"
+  },
+  "previews/assembly_front.png": {
+    "bytes": 198840,
+    "sha256": "17054302c5a8427f82b738b2bd4a2ace3b02cc189215a97a914cc89781dcb6c7"
+  },
+  "previews/cup_front_R10.png": {
+    "bytes": 135747,
+    "sha256": "8c1d0fdf660fc48d0b8e880fed8950885b69052082c070e606c8db04db02f0e4"
+  },
+  "previews/cup_section_flange_R10.png": {
+    "bytes": 69046,
+    "sha256": "c034e4c8ac17b651e1385c640b7080d891c5be8d25429ad397b6bf247b7f9daa"
+  },
+  "previews/assembly_front_R10.png": {
+    "bytes": 211287,
+    "sha256": "c65bf81c671d24b78a037e529f5089bf77fe360139d95dcb66a48c512c98ac36"
+  },
+  "previews/cup_section_curves.json": {
+    "bytes": 98456,
+    "sha256": "3ad8da23dfb54787e1d1d36a7bb515ac009d9cadddbc00d59ac082cac01dfb12"
+  },
+  "previews/opening_analytic_front.png": {
+    "bytes": 95735,
+    "sha256": "0e1f5699aa0c81ce56896ec89bba20f0d1e5069b8444e462fc47112d99c541e6"
+  },
+  "previews/opening_sketch_overlay.png": {
+    "bytes": 141286,
+    "sha256": "99af0acba06a8e799076cf92f71efdca52ce1d505a6e2603719e03b4d4ff75c4"
+  },
+  "previews/handle_three_views.png": {
+    "bytes": 134421,
+    "sha256": "80edf3d7fd41cb27d0d984fc64da1a8817ca53409b9f11487c0e27a8e352ff5d"
+  }
+}

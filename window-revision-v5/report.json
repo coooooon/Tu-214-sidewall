@@ -1,0 +1,373 @@
+{
+  "input_commit": "7ac8f70e035a7864f45363456c2ee388d4d0ca76",
+  "analytic_opening": {
+    "dimensions_mm": [
+      247.0000000000001,
+      345.0000000000901
+    ],
+    "radii_mm": [
+      90.0,
+      90.0,
+      90.0,
+      90.0,
+      349.99999999999,
+      349.99999999999,
+      1000.0,
+      1000.0
+    ],
+    "closed": true,
+    "max_join_gap_mm": 8.384404281969182e-13,
+    "max_tangent_angle_rad": 2.1073424255447017e-08,
+    "two_symmetry_axes": true,
+    "arcs": [
+      {
+        "center_mm": [
+          -0.0,
+          177.5
+        ],
+        "radius_mm": 350,
+        "angles_rad": [
+          4.597102828849791,
+          4.827675131919588
+        ]
+      },
+      {
+        "center_mm": [
+          29.908045734889985,
+          -80.77409626271026
+        ],
+        "radius_mm": 90,
+        "angles_rad": [
+          4.827675131919588,
+          6.194305591153079
+        ]
+      },
+      {
+        "center_mm": [
+          -876.5,
+          0.0
+        ],
+        "radius_mm": 1000,
+        "angles_rad": [
+          6.194305591153079,
+          6.372065023206093
+        ]
+      },
+      {
+        "center_mm": [
+          29.908045734889985,
+          80.77409626271026
+        ],
+        "radius_mm": 90,
+        "angles_rad": [
+          6.372065023206093,
+          7.738695482439584
+        ]
+      },
+      {
+        "center_mm": [
+          0.0,
+          -177.5
+        ],
+        "radius_mm": 350,
+        "angles_rad": [
+          7.738695482439584,
+          7.969267785509381
+        ]
+      },
+      {
+        "center_mm": [
+          -29.908045734889985,
+          80.77409626271026
+        ],
+        "radius_mm": 90,
+        "angles_rad": [
+          7.969267785509381,
+          9.335898244742873
+        ]
+      },
+      {
+        "center_mm": [
+          876.5,
+          -0.0
+        ],
+        "radius_mm": 1000,
+        "angles_rad": [
+          9.335898244742873,
+          9.513657676795885
+        ]
+      },
+      {
+        "center_mm": [
+          -29.908045734889985,
+          -80.77409626271026
+        ],
+        "radius_mm": 90,
+        "angles_rad": [
+          9.513657676795885,
+          10.880288136029376
+        ]
+      }
+    ],
+    "dimension_convention": "orthogonal XZ projection, not cylindrical development"
+  },
+  "cup": {
+    "actual_flange_width_range_mm": [
+      49.10979714473052,
+      53.56086737355622
+    ],
+    "inner_fillet_radius_mm": 10.0,
+    "outer_parallel_radius_mm": 7.0,
+    "inner_edge_count": 16,
+    "outer_edge_count": 8,
+    "skin_construction": "concentric cylindrical flange + eight native tangent cones + drilled analytical opening",
+    "wall_generator_slope": 0.45454545454545453,
+    "wall_generator_angle_deg": 24.443954780416536,
+    "section": {
+      "native_circle_radii_in_section_mm": [
+        1827.5,
+        1824.5,
+        1769.5,
+        1772.5,
+        1772.5,
+        1769.5,
+        1824.5,
+        1827.5
+      ],
+      "fitted_circle_radii_in_section": [
+        {
+          "radius_mm": 6.9999938388019745,
+          "max_circle_residual_mm": 5.794111945789382e-08
+        },
+        {
+          "radius_mm": 9.99999145777855,
+          "max_circle_residual_mm": 1.0271382144821928e-07
+        },
+        {
+          "radius_mm": 9.999991457908623,
+          "max_circle_residual_mm": 1.0273200423682738e-07
+        },
+        {
+          "radius_mm": 6.999993838688999,
+          "max_circle_residual_mm": 5.7918799534206755e-08
+        }
+      ],
+      "R10_section_verified": true,
+      "upper_flange_arc_lengths_mm": [
+        49.54265684043881
+      ]
+    },
+    "dimension_sketch_comparison": {
+      "actual_STEP_projected_edges": 24,
+      "max_circle_offset_residual_mm": 5.2116972947778914e-08,
+      "projected_dimensions_mm": [
+        247.0000000022583,
+        345.0
+      ],
+      "reference": "analytic reconstruction of supplied dimension sketch"
+    },
+    "two_axis_symmetry_volume_error_mm3": [
+      0.0,
+      0.0
+    ],
+    "R10_visible_pixels_assembly_front": {
+      "upper_left": 6418,
+      "upper_right": 6416,
+      "lower_left": 7606,
+      "lower_right": 7608
+    },
+    "fillet_face_signatures_local": [
+      [
+        1769.977077709291,
+        -109.57415699645621,
+        1763.9903513429856,
+        -157.30962395614566
+      ],
+      [
+        1769.977077709291,
+        -109.57415699645621,
+        1763.9903513429856,
+        157.30962395614566
+      ],
+      [
+        1769.977077709291,
+        109.57415699645621,
+        1763.9903513429856,
+        -157.30962395614566
+      ],
+      [
+        1769.977077709291,
+        109.57415699645621,
+        1763.9903513429856,
+        157.30962395614566
+      ],
+      [
+        1769.977077709291,
+        -109.57415699645621,
+        1763.9903513429856,
+        -157.30962395614566
+      ],
+      [
+        1769.977077709291,
+        -109.57415699645621,
+        1763.9903513429856,
+        157.30962395614566
+      ],
+      [
+        1769.977077709291,
+        109.57415699645621,
+        1763.9903513429856,
+        -157.30962395614566
+      ],
+      [
+        1769.977077709291,
+        109.57415699645621,
+        1763.9903513429856,
+        157.30962395614566
+      ]
+    ]
+  },
+  "handle": {
+    "dimensions_mm": [
+      120.00000020000002,
+      30.000000200000017,
+      15.0000002
+    ],
+    "affine_scale": [
+      1.2,
+      1,
+      0.6
+    ],
+    "previous_geometry_preserved": true,
+    "normalized_projection_errors_mm": {
+      "front": 0.031941508554101564,
+      "side": 3.8647052358491707,
+      "top": 11.913152385850925
+    },
+    "mount_offset_mm": 3
+  },
+  "assemblies": [
+    {
+      "state": "open",
+      "original_geometry_records_preserved": 32754,
+      "original_geometry_values_unchanged": true,
+      "checks": [
+        {
+          "window": 1,
+          "overlaps_mm3": {
+            "panel_cup": 0.0,
+            "shade_cup": 0.0,
+            "handle_cup": 0.0,
+            "panel_handle": 0.0,
+            "shade_handle": 0.0
+          }
+        },
+        {
+          "window": 2,
+          "overlaps_mm3": {
+            "panel_cup": 0.0,
+            "shade_cup": 0.0,
+            "handle_cup": 0.0,
+            "panel_handle": 0.0,
+            "shade_handle": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "state": "half",
+      "original_geometry_records_preserved": 32754,
+      "original_geometry_values_unchanged": true,
+      "checks": [
+        {
+          "window": 1,
+          "overlaps_mm3": {
+            "panel_cup": 0.0,
+            "shade_cup": 0.0,
+            "handle_cup": 0.0,
+            "panel_handle": 0.0,
+            "shade_handle": 0.0
+          }
+        },
+        {
+          "window": 2,
+          "overlaps_mm3": {
+            "panel_cup": 0.0,
+            "shade_cup": 0.0,
+            "handle_cup": 0.0,
+            "panel_handle": 0.0,
+            "shade_handle": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "state": "closed",
+      "original_geometry_records_preserved": 32754,
+      "original_geometry_values_unchanged": true,
+      "checks": [
+        {
+          "window": 1,
+          "overlaps_mm3": {
+            "panel_cup": 0.0,
+            "shade_cup": 0.0,
+            "handle_cup": 0.0,
+            "panel_handle": 0.0,
+            "shade_handle": 0.0
+          }
+        },
+        {
+          "window": 2,
+          "overlaps_mm3": {
+            "panel_cup": 0.0,
+            "shade_cup": 0.0,
+            "handle_cup": 0.0,
+            "panel_handle": 0.0,
+            "shade_handle": 0.0
+          }
+        }
+      ]
+    }
+  ],
+  "photograph_comparison": {
+    "repository_photo": "tu214-sidewall/references/18205_marked.png",
+    "current_chat_photo_visually_read": true,
+    "quantitative_photo_measurement": false
+  },
+  "source_files_unchanged": true,
+  "source_sha256": {
+    "corrected-window-v3/cad/assembly_half.step": "ae89927b4f6ecaa8d9b467b9aa666a48c50250669ecf11ed3a35aad9f787af73",
+    "corrected-window-v3/cad/assembly_open.step": "7d241355e31e2ce41e8ca718549ac126d7ab8bfaf670a00c299fd293cfc0598a",
+    "corrected-window-v3/cad/shade_2_half.step": "cc401920b473522c0f3c32b1886c90993ea53df99b2053c4705c602a719c0c1d",
+    "corrected-window-v3/cad/handle_1_half.step": "c40e0a57cef5d25ed9ce20ebf4a38950db1ff7a1ae49a3eba32a7d30372684b3",
+    "corrected-window-v3/cad/check_handle_sweep_1.step": "5103603ad3e1ec87229ef57d0c2a874c0aa98f9239a17d1b6b276a1424a1dcae",
+    "corrected-window-v3/cad/shade_1_open.step": "8fa331dcf7daa0a88d2f35726187099442bf2e6743c7c4aef4cde7ad016c6882",
+    "corrected-window-v3/cad/check_shade_sweep_1.step": "4797ad6a3e47d27e98145bf20c55838cb5e7c802d396d1eeb57e5518362dd7c5",
+    "corrected-window-v3/cad/shade_2_open.step": "5b56f6ef31f3b55a2a2a832df1c16ce73f58a5d5c0e4366b7f7d001988fe4e04",
+    "corrected-window-v3/cad/shade_1_closed.step": "e4fc24a8308865597d4e3000af99e85ac366b0b79972694ace4ea0137a1f1af3",
+    "corrected-window-v3/cad/check_handle_sweep_2.step": "4d9b562120432defd89429d8f1003b583a4f3df04b011a7472065bdd4ab69fbf",
+    "corrected-window-v3/cad/check_shade_sweep_2.step": "1d3af46b3305bf507ce3a24f9761809debd2276367ad5e67df4bbcecb30b6cc3",
+    "corrected-window-v3/cad/assembly_closed.step": "9e11ded014343b4bfb6425152d857d948ffbcd3defaaf28fe851af85688df359",
+    "corrected-window-v3/cad/handle_2_half.step": "e836fa9b818693601ca2960bf36163a153ca256e19995854b982f3bab94becb8",
+    "corrected-window-v3/cad/shade_1_half.step": "c98d081dc2c905be1814bfbe0e9d3f45797db3c76a006455b3ede63eef4a9cc0",
+    "corrected-window-v3/cad/shade_2_closed.step": "0df330e88aec502c36a41ce8795cd43807f6770b0245d18ef8cb8be82fe31a20",
+    "corrected-window-v3/cad/cup_1.step": "029f22b5cd11e122756721bd577e2f285dcd99bcfef24fdcfe057a33a5a53ed6",
+    "corrected-window-v3/cad/handle_1_open.step": "294c91d9181a8dec8e826745a860889cab9e61d5f7c7c961ae44580146a13e38",
+    "corrected-window-v3/cad/cup_2.step": "01c7e24ffc36af46c84ff134db93a30937c3cdef3233e10e86422d192fc801ef",
+    "corrected-window-v3/cad/handle_2_closed.step": "d410da34611528d80e9a194420faa64d76d22f0f00b9b29073bea37a4c889c07",
+    "corrected-window-v3/cad/handle_1_closed.step": "564fe37bceebaa8fd79df1ea1dd44c9952bfd0651e0ddf371c913ce0d7ff9da5",
+    "corrected-window-v3/cad/handle_2_open.step": "3c1c7a1ca339e010185db48191eb2f4b86523fb36555fc8c778c4686c5b24179",
+    "corrected-window-v3/cad/handle.step": "ab70ec55779e2edecc965ee3e5f32dbfd85eb052dd1d94cdc57e80840cebab47",
+    "handle-revision-v4/cad/handle_1_half.step": "3d06ea4fba59b358fa91f9da74656531c14a466e04ac0d77ced596ef93e9ecf3",
+    "handle-revision-v4/cad/handle_2_half.step": "59a187332fd4bbbf97820060feeb31f135fba4eaf6bc7e8a84ec3c951f4fbdbf",
+    "handle-revision-v4/cad/handle_1_open.step": "0a6db113e60a09400cef4c46ff239a9ee4cfa3fbda0a17c2ed43f6875a03c208",
+    "handle-revision-v4/cad/handle_2_closed.step": "a304a38f095874d2d30f32193d5878ad770fdc0b8f1be19ddea75713e98d0ad1",
+    "handle-revision-v4/cad/handle_1_closed.step": "e577776aa635c8bec755c4f44cde455890e2efc3219b1e2212feeddcd72ede11",
+    "handle-revision-v4/cad/handle_2_open.step": "6c8ae8d50e8d286e9f2f86a933e76fbd9514b5f8806808ccfbebd9cff95fe7ac",
+    "handle-revision-v4/cad/handle.step": "88e26de8497e859446d0788351c8ab0a855c954253feddac934b29d2c1e39e57",
+    "tu214-sidewall/cad/tu214_sidewall_original.step": "370fe795332fc1ff231cc2dd068df0051266bb9e5ab8a86258c18059c9a0160d",
+    "corrected-window-v3/build.py": "e02ab08062ab5857ecb38a21c4d89f40a4a5d10384e6afa34c80c0bd12defa57",
+    "corrected-window-v3/parameters.json": "f8a5b50436c5eff6f357c7bf33116dd9428c75d1a6fe916a98945ba024e236cd"
+  },
+  "all_checks_passed": true
+}
