@@ -246,7 +246,9 @@ def plot_handle(handle):
         newp=outline(vv,tri);oldp=outline(ov,ot)
         from shapely.affinity import scale as poly_scale
         reference=poly_scale(oldp,xfact=scale[0],yfact=scale[1],origin=(0,0))
-        metrics[kind]=float(newp.boundary.hausdorff_distance(reference.boundary))
+        from shapely.geometry import LineString
+        metrics[kind]=float(LineString(newp.exterior.coords).hausdorff_distance(LineString(reference.exterior.coords)))
+        assert metrics[kind]<.1,(kind,metrics[kind])
         q=np.array(newp.exterior.coords);a=np.array(reference.exterior.coords)
         ax.plot(*q.T,color="#2563eb",lw=2,label="Новый STEP")
         ax.plot(*a.T,color="#dc2626",lw=1,ls="--",label="Предыдущая форма × масштаб")
@@ -306,6 +308,17 @@ def section_check(cup,signatures):
     for e in part.Edges():
         p=np.array([v.toTuple() for v in e.positions(np.linspace(0,1,101))])
         ax.plot(p[:,2],p[:,1]-RF,color="#466d91",lw=1.5)
+        if e.geomType()!="CIRCLE" and p[:,2].max()>150:
+            q=p[:,[2,1]];origin=q.mean(0);qq=q-origin
+            A=np.column_stack((2*qq[:,0],2*qq[:,1],np.ones(len(q))))
+            cx,cy,cc=np.linalg.lstsq(A,np.sum(qq*qq,axis=1),rcond=None)[0]
+            rr=math.sqrt(max(0,cc+cx*cx+cy*cy))
+            residual=np.max(np.abs(np.linalg.norm(qq-[cx,cy],axis=1)-rr))
+            if abs(rr-10)<.03 and residual<.001:
+                ax.plot(p[:,2],p[:,1]-RF,color="#e67d1c",lw=3)
+                mid=p[len(p)//2]
+                ax.annotate("R10",(mid[2],mid[1]-RF),(mid[2]+12,mid[1]-RF+20),
+                            arrowprops={"arrowstyle":"->","color":"#e67d1c"},color="#bf6213",fontsize=12)
         if e.geomType()=="CIRCLE":
             rr=float(e._geomAdaptor().Circle().Radius())
             if abs(rr-10)<.03:ax.plot(p[:,2],p[:,1]-RF,color="#e67d1c",lw=3)
@@ -347,7 +360,7 @@ def main():
     assert abs(handle.Volume()/old.Volume()-.72)<1e-5
     assert float(old.cut(inv).Volume())<.002
     report["handle"]={"dimensions_mm":[dims.xlen,dims.ylen,dims.zlen],"affine_scale":[1.2,1,.6],
-        "previous_geometry_preserved":True,"normalized_projection_errors_mm":plot_handle(handle),"mount_offset_mm":3}
+        "previous_geometry_preserved":True,"normalized_outer_silhouette_errors_mm":plot_handle(handle),"mount_offset_mm":3}
     for i,frame in enumerate(frames,1):
         cups.append(export(to_world(local,frame),f"cup_{i}"))
         handles.append(mount_handle(handle,frame))
