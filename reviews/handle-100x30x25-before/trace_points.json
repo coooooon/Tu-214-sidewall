@@ -1,0 +1,287 @@
+{
+  "source": {
+    "kind": "chat_attachment",
+    "attachment_index": 4,
+    "filename": null,
+    "width_px": 1087,
+    "height_px": 764,
+    "method": "manual visible-stroke sampling; no interpolation or forced symmetry",
+    "uncertainty_px": [
+      5,
+      10
+    ],
+    "raster_bytes_available": false
+  },
+  "front": {
+    "bbox_px": [
+      139,
+      261,
+      674,
+      388
+    ],
+    "target_dimensions_mm": [
+      100,
+      25
+    ],
+    "points_px": [
+      [
+        139,
+        303
+      ],
+      [
+        221,
+        278
+      ],
+      [
+        316,
+        265
+      ],
+      [
+        414,
+        261
+      ],
+      [
+        514,
+        269
+      ],
+      [
+        610,
+        286
+      ],
+      [
+        668,
+        300
+      ],
+      [
+        674,
+        324
+      ],
+      [
+        670,
+        351
+      ],
+      [
+        578,
+        375
+      ],
+      [
+        477,
+        385
+      ],
+      [
+        379,
+        388
+      ],
+      [
+        279,
+        382
+      ],
+      [
+        188,
+        368
+      ],
+      [
+        139,
+        354
+      ]
+    ]
+  },
+  "side": {
+    "bbox_px": [
+      754,
+      265,
+      986,
+      369
+    ],
+    "target_dimensions_mm": [
+      30,
+      25
+    ],
+    "points_px": [
+      [
+        755,
+        265
+      ],
+      [
+        817,
+        268
+      ],
+      [
+        882,
+        275
+      ],
+      [
+        943,
+        285
+      ],
+      [
+        977,
+        293
+      ],
+      [
+        984,
+        313
+      ],
+      [
+        986,
+        333
+      ],
+      [
+        972,
+        340
+      ],
+      [
+        936,
+        346
+      ],
+      [
+        881,
+        354
+      ],
+      [
+        816,
+        363
+      ],
+      [
+        757,
+        369
+      ],
+      [
+        754,
+        333
+      ],
+      [
+        754,
+        298
+      ]
+    ]
+  },
+  "top": {
+    "bbox_px": [
+      129,
+      495,
+      653,
+      625
+    ],
+    "target_dimensions_mm": [
+      100,
+      30
+    ],
+    "points_px": [
+      [
+        129,
+        496
+      ],
+      [
+        230,
+        495
+      ],
+      [
+        335,
+        495
+      ],
+      [
+        440,
+        497
+      ],
+      [
+        552,
+        498
+      ],
+      [
+        653,
+        498
+      ],
+      [
+        648,
+        530
+      ],
+      [
+        634,
+        562
+      ],
+      [
+        614,
+        590
+      ],
+      [
+        553,
+        609
+      ],
+      [
+        460,
+        621
+      ],
+      [
+        373,
+        625
+      ],
+      [
+        282,
+        619
+      ],
+      [
+        174,
+        594
+      ],
+      [
+        155,
+        558
+      ],
+      [
+        140,
+        525
+      ]
+    ]
+  },
+  "baseline": {
+    "branch": "cad/tu214-window-node-v3",
+    "commit": "4d35629ffb1bf2d1543a70c9ec28d859196933ea",
+    "handle_step": "corrected-window-v3/cad/handle.step",
+    "handle_step_blob": "eceac298e980394a5e5961676e7d740b40999be6",
+    "dimensions_mm": [
+      100,
+      40,
+      25
+    ],
+    "mounted_handle_land_mm": [
+      20,
+      2,
+      1.5
+    ]
+  },
+  "views": {
+    "front": {
+      "svg": "source/handle_front.svg",
+      "blob": "eb4140589527d3b801b78f3d7804de7fb67ef831",
+      "raw_transform": "[svg_y,svg_x]"
+    },
+    "side": {
+      "svg": "source/handle_side.svg",
+      "blob": "7f80f4ebc87c5f3020e601302fa91ee86f484e23",
+      "raw_transform": "[svg_y,svg_x]"
+    },
+    "top": {
+      "svg": "source/handle_top.svg",
+      "blob": "6b6b7b58ade99da5036209abaf97b0f6d57c85a3",
+      "raw_transform": "[svg_x,-svg_y]"
+    }
+  },
+  "registration": {
+    "type": "independent bounding-box scale and translation per view; axes aligned, no perspective correction",
+    "front_cad_scale": [
+      1,
+      1
+    ],
+    "side_cad_scale": [
+      0.75,
+      1
+    ],
+    "top_cad_scale": [
+      1,
+      0.75
+    ],
+    "geometry_changed": false,
+    "view_assignment": "inferred from standard drawing placement; not labelled in sketch"
+  }
+}
