@@ -1,0 +1,90 @@
+{
+  "cad/handle.step": {
+    "bytes": 125900,
+    "sha256": "88e26de8497e859446d0788351c8ab0a855c954253feddac934b29d2c1e39e57"
+  },
+  "cad/handle_1_closed.step": {
+    "bytes": 208152,
+    "sha256": "e577776aa635c8bec755c4f44cde455890e2efc3219b1e2212feeddcd72ede11"
+  },
+  "cad/handle_1_half.step": {
+    "bytes": 208144,
+    "sha256": "3d06ea4fba59b358fa91f9da74656531c14a466e04ac0d77ced596ef93e9ecf3"
+  },
+  "cad/handle_1_open.step": {
+    "bytes": 208134,
+    "sha256": "0a6db113e60a09400cef4c46ff239a9ee4cfa3fbda0a17c2ed43f6875a03c208"
+  },
+  "cad/handle_2_closed.step": {
+    "bytes": 207949,
+    "sha256": "a304a38f095874d2d30f32193d5878ad770fdc0b8f1be19ddea75713e98d0ad1"
+  },
+  "cad/handle_2_half.step": {
+    "bytes": 207937,
+    "sha256": "59a187332fd4bbbf97820060feeb31f135fba4eaf6bc7e8a84ec3c951f4fbdbf"
+  },
+  "cad/handle_2_open.step": {
+    "bytes": 207930,
+    "sha256": "6c8ae8d50e8d286e9f2f86a933e76fbd9514b5f8806808ccfbebd9cff95fe7ac"
+  },
+  "previews/actual_front_outline.csv": {
+    "bytes": 2677,
+    "sha256": "1410e4c4dcb9523ff337f3591996dcc0d0e01689b347ea7841b08d3a96cf2533"
+  },
+  "previews/actual_side_outline.csv": {
+    "bytes": 3253,
+    "sha256": "8259b3ec9cf5dacd285e28ef60c64ad132a4df08ee13aab499239c16c49e33eb"
+  },
+  "previews/actual_top_outline.csv": {
+    "bytes": 18554,
+    "sha256": "a86e528de20d18c7651157dea9233f89283cc4826a082d019e07ccb820ba27e4"
+  },
+  "previews/handle_front_after.svg": {
+    "bytes": 14377,
+    "sha256": "4ba49fc3dbaa23fb333daaa7515ae5d9adc9cec97bccf70c1df9f42aebf36040"
+  },
+  "previews/handle_perspective_after.png": {
+    "bytes": 74497,
+    "sha256": "7400b5891fdca03f194431184a4533d90ac2bb5a117b5c7875f87fd9d0fb5f6a"
+  },
+  "previews/handle_side_after.svg": {
+    "bytes": 14305,
+    "sha256": "1ed85e3d6f6efec3394c2ef68d55e289a5a9f0e887f18133a203e5a6d1f69cdd"
+  },
+  "previews/handle_top_after.svg": {
+    "bytes": 12439,
+    "sha256": "4009589cecbe03b0fff8bd0397c1934ebcafd6a221d94bcbef57ab1ab7f18b92"
+  },
+  "previews/overlay_front_after.png": {
+    "bytes": 63655,
+    "sha256": "c2ed71bd26174edaaacddf2dc4ccaff87971a35584dd3be2decb218ecf648465"
+  },
+  "previews/overlay_side_after.png": {
+    "bytes": 59875,
+    "sha256": "9652924f8db41c85746f2a3f8226cd85273936f7e992ddbdbb6d2f507dbbe991"
+  },
+  "previews/overlay_top_after.png": {
+    "bytes": 66275,
+    "sha256": "30fb3c89949d71fab3f9ae2fafa28e61c528ad328247b6134b3de2da89ad1c2c"
+  },
+  "previews/photo_upper_compare.png": {
+    "bytes": 260979,
+    "sha256": "6f70996ea0cc4282d16a8e4efe0c07556a21e35f261868d1c621c3ec02b48c00"
+  },
+  "previews/three_views_before_after.png": {
+    "bytes": 304855,
+    "sha256": "91057e95b4156bd8925d1fd0810f7fa554586c2f1b523d91711767227bc8f70b"
+  },
+  "previews/upper_window_before_after.png": {
+    "bytes": 128972,
+    "sha256": "34b350bdb2907b44fa97c642d091cc349199d40e8ee7f0eeee4a890c2b761e36"
+  },
+  "previews/window_oblique_after.png": {
+    "bytes": 146249,
+    "sha256": "ddaec89c6a45f826e2e58d7b3c05c63be69cd85f474bb85f7dd3b0d5ca781551"
+  },
+  "previews/window_open_after.png": {
+    "bytes": 138331,
+    "sha256": "1984307b9e8017c1924a69dcc164b05a3a1a708a322ab7310524733e8acd1619"
+  }
+}
