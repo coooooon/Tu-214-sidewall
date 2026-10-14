@@ -245,14 +245,17 @@ def validate_positions(panel,frames,closed_handles):
     for i,(frame,h0) in enumerate(zip(frames,closed_handles),1):
         cup=cq.importers.importStep(str(OLD/f"cup_{i}.step")).val()
         shade=cq.importers.importStep(str(OLD/f"shade_{i}_closed.step")).val()
-        for t in np.linspace(0,TRAVEL,CFG["collision_positions"]):
+        positions=np.unique(np.concatenate([np.linspace(0,TRAVEL,CFG["collision_positions"]),
+            np.arange(TRAVEL-20,TRAVEL+.001,.5)]))
+        for t in positions:
             h=move_on_cylinder(h0,frame,float(t),R);s=move_on_cylinder(shade,frame,float(t),R)
             volumes={name:overlap(a,h) for name,a in [("panel",panel),("cup",cup),("shade",s)]}
             worst=max(worst,*volumes.values())
             checks.append({"window":i,"travel_mm":float(t),"intersections_mm3":volumes})
             assert max(volumes.values())<.002,(i,float(t),volumes)
         print("Collision positions passed, window",i,flush=True)
-    return {"positions_per_window":CFG["collision_positions"],"continuous_sweep_proof":False,
+    return {"positions_per_window":len(positions),"regular_positions_per_window":CFG["collision_positions"],
+      "raised_end_dense_step_mm":.5,"raised_end_dense_range_mm":[TRAVEL-20,TRAVEL],"continuous_sweep_proof":False,
       "max_intersection_mm3":worst,"samples":checks}
 
 def write_readme(report):
@@ -293,7 +296,7 @@ def write_readme(report):
 
 ## Проверки
 
-BRep валиден, одно замкнутое тело; STEP повторно импортирован. Габариты и симметрии проверены отдельно от визуального сравнения. Отсутствие пересечений с исходными панелью, чашкой и шторкой проверено в{CFG['collision_positions']}положениях каждого из двух окон; это дискретная проверка, не доказательство непрерывного sweep. Исходные CAD-файлы проверены по SHA-256. [Полный отчёт](report.json).
+BRep валиден, одно замкнутое тело; STEP повторно импортирован. Габариты и симметрии проверены отдельно от визуального сравнения. Отсутствие пересечений с исходными панелью, чашкой и шторкой проверено в{report['motion']['positions_per_window']}положениях каждого из двух окон, включая последние20ммхода сшагом0.5мм; это дискретная проверка, не доказательство непрерывного sweep. Исходные CAD-файлы проверены по SHA-256. [Полный отчёт](report.json).
 
 Воспроизведение: python -m pip install -r requirements.txt; python build_and_compare.py. Расчёт выполнялся в GitHub Actions с CadQuery/OpenCascade.
 """
