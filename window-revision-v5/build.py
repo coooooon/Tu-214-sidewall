@@ -75,12 +75,18 @@ def taper(offset=0):
     return base.pure_solid(base.solid_from_faces(faces))
 
 def opening_offset(p):
-    # Each projected point's signed distance from the eight nominal circle arcs.
-    ds=[]
+    # Closest point on the finite circle arcs, including tangency endpoints.
+    candidates=[]
     for a in ARCS:
-        q=p-a.center;ang=math.atan2(q[1],q[0]);u=(ang-a.a0)%(2*math.pi)
-        if u<=a.a1-a.a0+1e-8:ds.append(float(np.linalg.norm(q)-a.radius))
-    return min(ds,key=abs) if ds else 999.
+        q=p-a.center;ang=math.atan2(q[1],q[0])
+        mid=(a.a0+a.a1)/2
+        ang+=2*math.pi*round((mid-ang)/(2*math.pi))
+        clipped=np.clip(ang,a.a0,a.a1)
+        normal=np.array([math.cos(clipped),math.sin(clipped)])
+        foot=a.center+a.radius*normal
+        delta=p-foot
+        candidates.append((float(np.linalg.norm(delta)),float(np.dot(delta,normal))))
+    return min(candidates,key=lambda pair:pair[0])[1]
 
 def lip_edges(shape,radius):
     found=[]
