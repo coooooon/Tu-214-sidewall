@@ -157,6 +157,23 @@ def masks():
 def export(s,name):
     path=CAD/(name+".step");s=base.pure_solid(s);cq.exporters.export(s,str(path),exportType="STEP")
     return base.pure_solid(cq.importers.importStep(str(path)).val())
+def cut_volume(a,b):
+    try:return max(0.,float(a.cut(b).Volume()))
+    except ValueError as exc:
+        if "Null TopoDS" not in str(exc):raise
+        shared=float(a.intersect(b).Volume())
+        residual=abs(float(a.Volume())-shared)
+        assert residual<.001,("Null difference with nonzero residual",residual)
+        return residual
+def outside_difference(a,b,region):
+    try:diff=a.cut(b)
+    except ValueError as exc:
+        if "Null TopoDS" not in str(exc):raise
+        return cut_volume(a,b)
+    volume=max(0.,float(diff.Volume()))
+    if volume<1e-8:return 0.
+    within=max(0.,float(diff.intersect(region).Volume()))
+    return max(0.,volume-within)
 def contact_data(shape,frame):
     pts=[]
     for f in shape.Faces():
@@ -239,9 +256,9 @@ def main():
     added=candidate.cut(old).intersect(region);removed=old.cut(candidate).intersect(region)
     result=base.pure_solid(old.cut(removed).fuse(added).fix())
     result=export(result,"cup_local")
-    outside_a=float(old.cut(result).cut(region).Volume());outside_b=float(result.cut(old).cut(region).Volume())
+    outside_a=outside_difference(old,result,region);outside_b=outside_difference(result,old,region)
     assert max(outside_a,outside_b)<.02,(outside_a,outside_b)
-    sym=[float(result.cut(result.mirror(p)).Volume()) for p in ("YZ","XY")]
+    sym=[cut_volume(result,result.mirror(p)) for p in ("YZ","XY")]
     assert max(sym)<.02,sym
     opening=v5.opening_actual_compare(result)
     # This helper writes its comparison into v5 previews; do not save those changes.
