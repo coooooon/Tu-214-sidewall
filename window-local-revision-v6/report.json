@@ -1,0 +1,140 @@
+{
+  "baseline_commit": "4db64ea3848f3ec188f8cd6854606298099a5fad",
+  "local_material_net_change_mm3": -4389.01878366046,
+  "outside_boundary_preservation": [
+    {
+      "points": 256,
+      "max_boundary_distance_mm": 5.084229945850415e-13,
+      "rms_boundary_distance_mm": 1.7099315496132553e-13
+    },
+    {
+      "points": 256,
+      "max_boundary_distance_mm": 4.96821317779374e-13,
+      "rms_boundary_distance_mm": 1.9224235355668545e-13
+    }
+  ],
+  "cup_symmetry_difference_mm3": [
+    0.0,
+    0.0
+  ],
+  "corner_G1_normal_residual": 2.0041820487823113e-13,
+  "corner_fillet_radius_mm": 10.0,
+  "back_parallel_fillet_radius_mm": 7.0,
+  "opening": {
+    "actual_STEP_projected_edges": 24,
+    "max_circle_offset_residual_mm": 5.211695879728252e-08,
+    "projected_dimensions_mm": [
+      247.0000000022583,
+      345.0
+    ],
+    "reference": "analytic reconstruction of supplied dimension sketch"
+  },
+  "handle_mount": [
+    {
+      "window": 1,
+      "existing_gap_mm": 4.00000000000216,
+      "rigid_surface_shift_mm": 2.99999999999784,
+      "new_gap_mm": 6.999999999999943,
+      "mount_pad_arc_length_mm": 1.9999999999952252,
+      "horizontal_center_mm": 8.297450735295966e-12
+    },
+    {
+      "window": 2,
+      "existing_gap_mm": 4.00000000000216,
+      "rigid_surface_shift_mm": 2.99999999999784,
+      "new_gap_mm": 6.999999999999943,
+      "mount_pad_arc_length_mm": 1.9999999999952252,
+      "horizontal_center_mm": -1.1379939894708297e-12
+    }
+  ],
+  "assembly_checks": [
+    {
+      "state": "open",
+      "checks": [
+        {
+          "window": 1,
+          "overlaps_mm3": {
+            "panel_cup": 0.0,
+            "shade_cup": 0.0,
+            "handle_cup": 0.0,
+            "panel_handle": 0.0,
+            "shade_handle": 0.0
+          }
+        },
+        {
+          "window": 2,
+          "overlaps_mm3": {
+            "panel_cup": 0.0,
+            "shade_cup": 0.0,
+            "handle_cup": 0.0,
+            "panel_handle": 0.0,
+            "shade_handle": 0.0
+          }
+        }
+      ],
+      "original_geometry_records_preserved": 32754,
+      "original_geometry_values_unchanged": true
+    },
+    {
+      "state": "half",
+      "checks": [
+        {
+          "window": 1,
+          "overlaps_mm3": {
+            "panel_cup": 0.0,
+            "shade_cup": 0.0,
+            "handle_cup": 0.0,
+            "panel_handle": 0.0,
+            "shade_handle": 0.0
+          }
+        },
+        {
+          "window": 2,
+          "overlaps_mm3": {
+            "panel_cup": 0.0,
+            "shade_cup": 0.0,
+            "handle_cup": 0.0,
+            "panel_handle": 0.0,
+            "shade_handle": 0.0
+          }
+        }
+      ],
+      "original_geometry_records_preserved": 32754,
+      "original_geometry_values_unchanged": true
+    },
+    {
+      "state": "closed",
+      "checks": [
+        {
+          "window": 1,
+          "overlaps_mm3": {
+            "panel_cup": 0.0,
+            "shade_cup": 0.0,
+            "handle_cup": 0.0,
+            "panel_handle": 0.0,
+            "shade_handle": 0.0
+          }
+        },
+        {
+          "window": 2,
+          "overlaps_mm3": {
+            "panel_cup": 0.0,
+            "shade_cup": 0.0,
+            "handle_cup": 0.0,
+            "panel_handle": 0.0,
+            "shade_handle": 0.0
+          }
+        }
+      ],
+      "original_geometry_records_preserved": 32754,
+      "original_geometry_values_unchanged": true
+    }
+  ],
+  "visible_corner_flat_flange_pixels": {
+    "before": 22054,
+    "after": 0
+  },
+  "baseline_STEP_files_unchanged": true,
+  "canonical_handle_unchanged": true,
+  "all_checks_passed": true
+}
