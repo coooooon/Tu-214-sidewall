@@ -200,6 +200,8 @@ def opening_actual_compare(cup):
         p=np.array([v.toTuple() for v in e.positions(np.linspace(0,1,201))])
         if np.ptp(p[:,[0,2]],axis=0).max()<.2:continue
         err=[abs(opening_offset(q[[0,2]])) for q in p]
+        if p[:,1].min()>RB-30:
+            print("Opening edge",e.geomType(),"XZ min/max",p[:,[0,2]].min(0),p[:,[0,2]].max(0),"error",max(err),"mid",p[100],flush=True)
         if max(err)<.003 and p[:,1].min()>RB-30:
             curves.append(p[:,[0,2]]);errors.extend(err)
     assert len(curves)>=8,("Actual hole edges not found",len(curves))
