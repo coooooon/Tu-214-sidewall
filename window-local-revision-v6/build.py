@@ -168,12 +168,11 @@ def masks():
 def export(s,name):
     path=CAD/(name+".step");s=base.pure_solid(s)
     if name.startswith("cup"):
-        from OCP.ShapeUpgrade import ShapeUpgrade_ShapeDivideContinuity
-        from OCP.GeomAbs import GeomAbs_C2
-        divider=ShapeUpgrade_ShapeDivideContinuity(s.wrapped);divider.SetSurfaceCriterion(GeomAbs_C2);divider.SetBoundaryCriterion(GeomAbs_C2);divider.Perform()
-        divided=cq.Shape.cast(divider.Result())
-        print("Continuity split",name,divided.isValid(),len(s.Faces()),len(divided.Faces()),flush=True)
-        if divided.isValid():s=base.pure_solid(divided)
+        from OCP.ShapeFix import ShapeFix_FixSmallFace
+        small=ShapeFix_FixSmallFace();small.Init(s.wrapped);small.SetPrecision(1e-5);small.SetMaxTolerance(.0001);small.Perform()
+        clean=cq.Shape.cast(small.FixShape())
+        print("Small-face cleanup",name,clean.isValid(),len(s.Faces()),len(clean.Faces()),flush=True)
+        if clean.isValid():s=base.pure_solid(clean)
     cq.exporters.export(s,str(path),exportType="STEP")
     restored=cq.importers.importStep(str(path)).val()
     print("STEP import",name,restored.isValid(),len(restored.Solids()),flush=True)
@@ -182,12 +181,15 @@ def export(s,name):
         check=BRepCheck_Analyzer(restored.wrapped)
         for i,face in enumerate(restored.Faces()):
             if not check.IsValid(face.wrapped):
-                print("Invalid imported face",i,face.geomType(),list(check.Result(face.wrapped).Status()),flush=True)
+                print("Invalid imported face",i,face.geomType(),"area",face.Area(),"center",face.Center().toTuple(),list(check.Result(face.wrapped).Status()),flush=True)
                 for edge in face.Edges():
                     try:status=list(check.Result(edge.wrapped).StatusOnShape(face.wrapped))
                     except Exception:status=list(check.Result(edge.wrapped).Status())
                     print("Edge status",edge.geomType(),status,flush=True)
-        from OCP.ShapeFix import ShapeFix_Shape
+        from OCP.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallFace
+        small=ShapeFix_FixSmallFace();small.Init(restored.wrapped);small.SetPrecision(.0001);small.SetMaxTolerance(.001);small.Perform()
+        restored=cq.Shape.cast(small.FixShape())
+        print("Imported small-face cleanup",name,restored.isValid(),flush=True)
         from OCP.BRepLib import BRepLib
         healer=ShapeFix_Shape(restored.wrapped);healer.SetPrecision(1e-6);healer.SetMinTolerance(1e-7);healer.SetMaxTolerance(.001);healer.Perform()
         restored=cq.Shape.cast(healer.Shape())
