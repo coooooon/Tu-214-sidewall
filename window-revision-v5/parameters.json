@@ -1,0 +1,23 @@
+{
+  "opening": {
+    "width_mm": 247,
+    "height_mm": 345,
+    "side_radius_mm": 1000,
+    "crown_radius_mm": 350,
+    "corner_radius_mm": 90
+  },
+  "flange_radius_mm": 1769.5,
+  "floor_radius_mm": 1824.5,
+  "wall_mm": 3,
+  "mouth_offset_mm": 25,
+  "flange_width_mm": 50,
+  "fillet_radius_mm": 10,
+  "handle_dimensions_mm": [
+    120,
+    30,
+    15
+  ],
+  "handle_source": "handle-revision-v4/cad/handle.step",
+  "handle_offset_mm": 3,
+  "flange_outer_edge_allowance_mm": 10
+}
