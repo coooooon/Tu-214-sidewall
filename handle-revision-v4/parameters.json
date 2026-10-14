@@ -97,7 +97,8 @@
     12,
     14
   ],
-  "visible_height_width_goal": 0.12,
+  "visible_height_width_goal": 0.21,
   "collision_positions": 21,
-  "accepted_trace_commit": "51c8a43332dbcd9329ece51c5b6a0f7a14443157"
+  "accepted_trace_commit": "51c8a43332dbcd9329ece51c5b6a0f7a14443157",
+  "visible_ratio_reference": "Approximate front views in the third user photo, about 0.20-0.23; qualitative, not metrology"
 }
