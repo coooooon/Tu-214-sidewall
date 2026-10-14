@@ -166,10 +166,27 @@ def masks():
     wedge=cq.Solid.extrudeLinear(w,[],cq.Vector(0,400,0)).intersect(v5.radial_band(RF-.001,CFG["local_depth_limit_radius_mm"]))
     return cq.Compound.makeCompound([wedge,wedge.mirror("YZ"),wedge.mirror("XY"),wedge.mirror("YZ").mirror("XY")])
 def export(s,name):
-    path=CAD/(name+".step");s=base.pure_solid(s);cq.exporters.export(s,str(path),exportType="STEP")
+    path=CAD/(name+".step");s=base.pure_solid(s)
+    if name.startswith("cup"):
+        from OCP.ShapeUpgrade import ShapeUpgrade_ShapeDivideContinuity
+        from OCP.GeomAbs import GeomAbs_C2
+        divider=ShapeUpgrade_ShapeDivideContinuity(s.wrapped);divider.SetSurfaceCriterion(GeomAbs_C2);divider.SetBoundaryCriterion(GeomAbs_C2);divider.Perform()
+        divided=cq.Shape.cast(divider.Result())
+        print("Continuity split",name,divided.isValid(),len(s.Faces()),len(divided.Faces()),flush=True)
+        if divided.isValid():s=base.pure_solid(divided)
+    cq.exporters.export(s,str(path),exportType="STEP")
     restored=cq.importers.importStep(str(path)).val()
     print("STEP import",name,restored.isValid(),len(restored.Solids()),flush=True)
     if not restored.isValid():
+        from OCP.BRepCheck import BRepCheck_Analyzer
+        check=BRepCheck_Analyzer(restored.wrapped)
+        for i,face in enumerate(restored.Faces()):
+            if not check.IsValid(face.wrapped):
+                print("Invalid imported face",i,face.geomType(),list(check.Result(face.wrapped).Status()),flush=True)
+                for edge in face.Edges():
+                    try:status=list(check.Result(edge.wrapped).StatusOnShape(face.wrapped))
+                    except Exception:status=list(check.Result(edge.wrapped).Status())
+                    print("Edge status",edge.geomType(),status,flush=True)
         from OCP.ShapeFix import ShapeFix_Shape
         from OCP.BRepLib import BRepLib
         healer=ShapeFix_Shape(restored.wrapped);healer.SetPrecision(1e-6);healer.SetMinTolerance(1e-7);healer.SetMaxTolerance(.001);healer.Perform()
