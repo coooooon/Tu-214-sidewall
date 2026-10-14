@@ -95,6 +95,7 @@ def overlap(a,b):
 
 def mesh_outline(shape,axes,neg_second=False):
     vertices,tri=shape.tessellate(.025,.06)
+    tri=np.asarray(tri,dtype=int)
     vv=np.array([p.toTuple() for p in vertices])[:,axes]
     if neg_second:vv[:,1]*=-1
     if axes==[1,2]:vv[:,0]*=-1
