@@ -33,7 +33,7 @@ base=v5.base;RF=v5.RF;RB=v5.RB;T=v5.T;R=v5.R
 D=json.loads((ROOT/"diagnostic.json").read_text());ARCS=v5.ARCS
 CFG={"baseline_commit":"4db64ea3848f3ec188f8cd6854606298099a5fad","mount_gap_mm":7.,
      "corner_follow_clearance_mm":5.0,"corner_sector_margin_rad":.04,
-     "local_depth_limit_radius_mm":RF+43.,"blend_y_start_mm":RF-20.,"blend_y_end_mm":RF+25.}
+     "local_depth_limit_radius_mm":RF+43.,"blend_y_start_mm":RF-10.,"blend_y_end_mm":RF+25.}
 (ROOT/"parameters.json").write_text(json.dumps(CFG,indent=2)+"\n")
 C=ARCS[3].center;A0=ARCS[3].a0;SPAN=ARCS[3].a1-A0
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
@@ -319,6 +319,9 @@ def main():
     old_local_volume=float(old_local.Volume())
     new_local_volume=float(new_local.Volume())
     print("Original cup remainder retained; local volume delta",new_local_volume-old_local_volume,flush=True)
+    old_bounds=base.exact_bounds(old);new_bounds=base.exact_bounds(result)
+    envelope_errors={k:abs(getattr(old_bounds,k)-getattr(new_bounds,k)) for k in ("xmin","xmax","ymin","ymax","zmin","zmax")}
+    assert max(envelope_errors.values())<.001,envelope_errors
     surface_check=outside_surface_check(old,result)
     sym=[cut_volume(result,result.mirror(p)) for p in ("YZ","XY")]
     assert max(sym)<.02,sym
@@ -326,7 +329,7 @@ def main():
     # This helper writes its comparison into v5 previews; do not save those changes.
     panel=cq.importers.importStep(str(base.SOURCE)).val();frames=base.frames_from_panel(panel)
     report={"baseline_commit":CFG["baseline_commit"],"local_material_net_change_mm3":new_local_volume-old_local_volume,
-      "outside_boundary_preservation":surface_check,"cup_symmetry_difference_mm3":sym,"corner_G1_normal_residual":max(G1_ERRORS),"corner_fillet_radius_mm":10.,"back_parallel_fillet_radius_mm":7.,"opening":opening,"handle_mount":[],"assembly_checks":[]}
+      "outside_boundary_preservation":surface_check,"external_envelope_errors_mm":envelope_errors,"cup_symmetry_difference_mm3":sym,"corner_G1_normal_residual":max(G1_ERRORS),"corner_fillet_radius_mm":10.,"back_parallel_fillet_radius_mm":7.,"opening":opening,"handle_mount":[],"assembly_checks":[]}
     for i,frame in enumerate(frames,1):
         export(v5.to_world(result,frame),f"cup_{i}")
         oldh=cq.importers.importStep(str(OLD/f"cad/handle_{i}_closed.step")).val()
