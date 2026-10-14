@@ -117,9 +117,9 @@ def build_cup():
     inner=taper(0)
     outer=taper(T/math.cos(ALPHA))
     flange=radial_band(RF,RF+T).intersect(prism(CFG["mouth_offset_mm"]+CFG["flange_width_mm"]+CFG["fillet_radius_mm"]))
-    walls=outer.cut(inner).intersect(radial_band(RF,RB+T))
+    walls=outer.cut(inner).intersect(radial_band(RF,RB))
     floor=radial_band(RB,RB+T).intersect(outer)
-    raw=base.pure_solid(flange.fuse(walls).fuse(floor).cut(inner).cut(prism(0)).fix())
+    raw=base.pure_solid(flange.cut(inner).fuse(walls).fuse(floor).cut(prism(0)).fix())
     inner_edges=lip_edges(raw,RF)
     print("R10 selected edges",len(inner_edges),flush=True)
     rounded,signatures=fillet(raw,10.,inner_edges)
@@ -200,12 +200,11 @@ def opening_actual_compare(cup):
         p=np.array([v.toTuple() for v in e.positions(np.linspace(0,1,201))])
         if np.ptp(p[:,[0,2]],axis=0).max()<.2:continue
         err=[abs(opening_offset(q[[0,2]])) for q in p]
-        if p[:,1].min()>RB-30:
-            print("Opening edge",e.geomType(),"XZ min/max",p[:,[0,2]].min(0),p[:,[0,2]].max(0),"error",max(err),"mid",p[100],flush=True)
         if max(err)<.003 and p[:,1].min()>RB-30:
             curves.append(p[:,[0,2]]);errors.extend(err)
     assert len(curves)>=8,("Actual hole edges not found",len(curves))
     pts=np.vstack(curves)
+    print("Actual hole STEP projected bounds",np.ptp(pts,axis=0),"max error",max(errors),flush=True)
     assert np.allclose(np.ptp(pts,axis=0),[247,345],atol=.003),np.ptp(pts,axis=0)
     fig,ax=plt.subplots(figsize=(8,10),facecolor="white")
     for i,q in enumerate(curves):
@@ -435,7 +434,7 @@ def main():
 ![Ручка](previews/handle_three_views.png)
 ![Сборка](previews/assembly_perspective.png)
 
-ВершиныR10 действительно видны при ортогональном рендере исходной панели и всех деталей. Числа видимых пикселей каждого угла находятся вreport.json. [Фото и сборка](previews/photo_assembly_compare.png) используют доступный файл tu214-sidewall/references/18205_marked.png. Последняя фотография и размерный эскиз пользователя визуально прочитаны в чате; имена/растровые байты вложений не переданы, поэтому их оригиналы не включены. Геометрия проверена по точным размерам эскиза, симметрии и касательности; визуальное сравнение с фото качественное.
+Участки скругления R10 действительно видны при ортогональном рендере исходной панели и всех деталей. Числа видимых пикселей каждого угла находятся вreport.json. [Фото и сборка](previews/photo_assembly_compare.png) используют доступный файл tu214-sidewall/references/18205_marked.png. Последняя фотография и размерный эскиз пользователя визуально прочитаны в чате; имена/растровые байты вложений не переданы, поэтому их оригиналы не включены. Геометрия проверена по точным размерам эскиза, симметрии и касательности; визуальное сравнение с фото качественное.
 
 Исходные CAD-файлы и панель не перезаписаны; их SHA-256 совпадает. В сборочныхSTEP сохранены исходные BRep-записи панели. [Открытая сборка](cad/assembly_open.step), [Чашка1](cad/cup_1.step), [Чашка2](cad/cup_2.step), [Ручка](cad/handle.step).
 
@@ -447,7 +446,7 @@ def main():
     with zipfile.ZipFile(ROOT/"window_cup_handle_STEP.zip","w",zipfile.ZIP_DEFLATED) as z:
         for folder in (CAD,OUT):
             for p in folder.iterdir():z.write(p,str(p.relative_to(ROOT)))
-        for name in ("README.md","report.json","parameters.json","manifest.json"):z.write(ROOT/name,name)
+        for name in ("README.md","report.json","parameters.json","manifest.json","build.py","requirements.txt"):z.write(ROOT/name,name)
     print("COMPLETE",flush=True)
 
 if __name__=="__main__":main()
