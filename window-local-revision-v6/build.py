@@ -32,8 +32,8 @@ from preserve_step_panel import preserve_panel
 base=v5.base;RF=v5.RF;RB=v5.RB;T=v5.T;R=v5.R
 D=json.loads((ROOT/"diagnostic.json").read_text());ARCS=v5.ARCS
 CFG={"baseline_commit":"4db64ea3848f3ec188f8cd6854606298099a5fad","mount_gap_mm":7.,
-     "corner_follow_clearance_mm":1.0,"corner_sector_margin_rad":.04,
-     "local_depth_limit_radius_mm":RF+43.,"blend_y_start_mm":RF+5.,"blend_y_end_mm":RF+25.}
+     "corner_follow_clearance_mm":5.0,"corner_sector_margin_rad":.04,
+     "local_depth_limit_radius_mm":RF+43.,"blend_y_start_mm":RF-20.,"blend_y_end_mm":RF+25.}
 (ROOT/"parameters.json").write_text(json.dumps(CFG,indent=2)+"\n")
 C=ARCS[3].center;A0=ARCS[3].a0;SPAN=ARCS[3].a1-A0
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
@@ -58,15 +58,24 @@ old_lip=sample_parts(D[f"cup_lip_{RF}"])
 def smooth(t):return np.where(t<=0,0,np.where(t>=1,1,10*t**3-15*t**4+6*t**5))
 u=np.linspace(0,1,121)
 window=smooth((u-.025)/.15)*smooth((.975-u)/.15)
-delta=np.array([ray_hit(panel_parts,A0+SPAN*t)-ray_hit(old_lip,A0+SPAN*t)+CFG["corner_follow_clearance_mm"] for t in u])*window
+delta=np.maximum(0.,np.array([ray_hit(panel_parts,A0+SPAN*t)-ray_hit(old_lip,A0+SPAN*t)+CFG["corner_follow_clearance_mm"] for t in u]))*window
 SHIFT=make_interp_spline(u,delta,k=5,bc_type=([(1,0.),(2,0.)],[(1,0.),(2,0.)]))
 (ROOT/"corner_shift.json").write_text(json.dumps({"u":u.tolist(),"delta_mm":delta.tolist(),"window":window.tolist()},indent=2))
-# Exact C2 compact support in depth, represented by a degree-5 B-spline.
+# One-sided C profile: cubic decay to the original wall with C2 continuity.\n# A quadratic continuation lies ahead of the physical flange and closes the tool solid.
 Y0=v5.YBACK;Y1=v5.YFRONT;DY=Y1-Y0
 ve=(CFG["blend_y_end_mm"]-Y0)/DY;vs=(CFG["blend_y_start_mm"]-Y0)/DY
 vknots=np.array([0.]*6+[ve]*3+[vs]*3+[1.]*6)
 nv=len(vknots)-6;greville=np.array([vknots[i+1:i+6].mean() for i in range(nv)])
-def gfun(v):return smooth((v-ve)/(vs-ve))
+def gfun(v):
+    yy=Y0+DY*v;end=CFG["blend_y_end_mm"];front=CFG["blend_y_start_mm"];a=end-front
+    t=yy-front
+    return np.where(yy>=end,0.,np.where(yy>=front,(end-yy)**3,a**3-3*a*a*t+3*a*t*t))
+def depth_scale(ref):
+    phi=A0+SPAN*ref;d=max(0.,float(SHIFT(ref)))
+    b=v5.SLOPE*math.sin(phi)
+    k=C[1]+(90.+v5.SLOPE*RB+d)*math.sin(phi)
+    mouth_y=(k*b+math.sqrt((1+b*b)*RF*RF-k*k))/(1+b*b)
+    return (CFG["blend_y_end_mm"]-mouth_y)**3
 basis=BSpline.design_matrix(greville,vknots,5).toarray()
 gcoeff=np.linalg.solve(basis,gfun(greville));yc=Y0+DY*greville
 corner_surfaces={};G1_ERRORS=[]
@@ -75,7 +84,7 @@ def corner_surface(index):
     vals=[]
     for t in us:
         phi=a.a0+(a.a1-a.a0)*t;n=np.array([math.cos(phi),math.sin(phi)])
-        sh=float(SHIFT(1-t if rev else t))
+        ref=1-t if rev else t;sh=float(SHIFT(ref))/depth_scale(ref)
         rad=a.radius+v5.SLOPE*(RB-yc)+sh*gcoeff
         vals.append(np.column_stack((a.center[0]+rad*n[0],yc,a.center[1]+rad*n[1])))
     vals=np.array(vals);sp=a.a1-a.a0
