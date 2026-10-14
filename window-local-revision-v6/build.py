@@ -162,7 +162,7 @@ def export(s,name):
 def boolean(a,b,kind):
     cls={"cut":BRepAlgoAPI_Cut,"common":BRepAlgoAPI_Common,"fuse":BRepAlgoAPI_Fuse}[kind]
     op=cls();args=TopTools_ListOfShape();args.Append(a.wrapped);ops=TopTools_ListOfShape();ops.Append(b.wrapped)
-    op.SetArguments(args);op.SetTools(ops);op.SetFuzzyValue(1e-5);op.SetNonDestructive(True);op.SetRunParallel(True);op.Build()
+    op.SetArguments(args);op.SetTools(ops);op.SetFuzzyValue(1e-7);op.SetNonDestructive(True);op.SetRunParallel(True);op.Build()
     assert op.IsDone(),("Boolean failed",kind)
     assert not op.Shape().IsNull(),("Null Boolean result",kind)
     return cq.Shape.cast(op.Shape())
