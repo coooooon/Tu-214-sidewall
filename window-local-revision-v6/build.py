@@ -167,7 +167,19 @@ def masks():
     return cq.Compound.makeCompound([wedge,wedge.mirror("YZ"),wedge.mirror("XY"),wedge.mirror("YZ").mirror("XY")])
 def export(s,name):
     path=CAD/(name+".step");s=base.pure_solid(s);cq.exporters.export(s,str(path),exportType="STEP")
-    return base.pure_solid(cq.importers.importStep(str(path)).val())
+    restored=cq.importers.importStep(str(path)).val()
+    print("STEP import",name,restored.isValid(),len(restored.Solids()),flush=True)
+    if not restored.isValid():
+        from OCP.ShapeFix import ShapeFix_Shape
+        from OCP.BRepLib import BRepLib
+        healer=ShapeFix_Shape(restored.wrapped);healer.SetPrecision(1e-6);healer.SetMinTolerance(1e-7);healer.SetMaxTolerance(.001);healer.Perform()
+        restored=cq.Shape.cast(healer.Shape())
+        BRepLib.SameParameter_s(restored.wrapped,1e-6,True)
+        print("STEP healed",name,restored.isValid(),flush=True)
+        cq.exporters.export(restored,str(path),exportType="STEP")
+        restored=cq.importers.importStep(str(path)).val()
+        print("STEP reimport after healing",name,restored.isValid(),flush=True)
+    return base.pure_solid(restored)
 def outside_surface_check(old,new):
     from OCP.BRepExtrema import BRepExtrema_DistShapeShape
     def clear_outside(p):
