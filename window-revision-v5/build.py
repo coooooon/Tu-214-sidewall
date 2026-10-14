@@ -7,6 +7,8 @@ import cadquery as cq
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from OCP.BRepMesh import BRepMesh_IncrementalMesh
+from PIL import Image
 from OCP.Geom import Geom_ConicalSurface
 from OCP.gp import gp_Ax3,gp_Pnt,gp_Dir
 from OCP.BRepBuilderAPI import BRepBuilderAPI_MakeFace
@@ -185,6 +187,33 @@ def analytic_check():
        "max_join_gap_mm":max(gap),"max_tangent_angle_rad":max(tangent),
        "two_symmetry_axes":True,"arcs":data,"dimension_convention":"orthogonal XZ projection, not cylindrical development"}
 
+
+def opening_actual_compare(cup):
+    curves=[];errors=[]
+    for e in cup.Edges():
+        p=np.array([v.toTuple() for v in e.positions(np.linspace(0,1,201))])
+        if np.ptp(p[:,[0,2]],axis=0).max()<.2:continue
+        err=[abs(opening_offset(q[[0,2]])) for q in p]
+        if max(err)<.003 and p[:,1].min()>RB-30:
+            curves.append(p[:,[0,2]]);errors.extend(err)
+    assert len(curves)>=8,("Actual hole edges not found",len(curves))
+    pts=np.vstack(curves)
+    assert np.allclose(np.ptp(pts,axis=0),[247,345],atol=.003),np.ptp(pts,axis=0)
+    fig,ax=plt.subplots(figsize=(8,10),facecolor="white")
+    for i,q in enumerate(curves):
+        ax.plot(q[:,0],q[:,1],color="#2563eb",lw=3,label="Контур отверстия из STEP чашки" if i==0 else None)
+    for i,a in enumerate(ARCS):
+        q=np.array([a.data(t)[0] for t in np.linspace(0,1,301)])
+        ax.plot(q[:,0],q[:,1],color="#dc2626",lw=1.2,ls="--",label="Аналитический контур по размерам эскиза" if i==0 else None)
+    ax.axhline(0,color="#999",ls=":",lw=.7);ax.axvline(0,color="#999",ls=":",lw=.7)
+    ax.set_aspect("equal");ax.grid(alpha=.15);ax.legend(fontsize=8)
+    ax.set_xlabel("X, мм");ax.set_ylabel("Z, мм")
+    ax.set_title("Фронтально: отверстие реальной чашки и размерный эскиз")
+    fig.text(.04,.015,"Красный контур восстановлен по247×345 и R1000/R350/R90; это не растровая трассировка.",fontsize=9)
+    fig.tight_layout(rect=(0,.04,1,1));fig.savefig(OUT/"opening_sketch_overlay.png",dpi=160);plt.close(fig)
+    return {"actual_STEP_projected_edges":len(curves),"max_circle_offset_residual_mm":max(errors),
+            "projected_dimensions_mm":np.ptp(pts,axis=0).tolist(),"reference":"analytic reconstruction of supplied dimension sketch"}
+
 def mount_handle(canonical,frame):
     station=base.P["shade_closed_lower_edge_mm"]+3
     a=frame.theta+station/R;r=R-.05
@@ -226,7 +255,10 @@ def save_img(img,name,title,note):
 
 def colored_mesh(path,signatures):
     mesh=load_mesh(path,[245,239,225])
-    shape=cq.importers.importStep(str(path)).val();offset=0;colors=mesh[3].copy();ids=[]
+    shape=cq.importers.importStep(str(path)).val()
+    BRepMesh_IncrementalMesh(shape.wrapped,.12,False,.08,True)
+    shape.tessellate(.2,.12)
+    offset=0;colors=mesh[3].copy();ids=[]
     for face in shape.Faces():
         loc=TopLoc_Location();poly=BRep_Tool.Triangulation_s(face.wrapped,loc)
         if poly is None:raise RuntimeError("Face triangulation missing")
@@ -261,9 +293,29 @@ def section_check(cup,signatures):
     ax.set_title("Сечение X=0: цилиндрический фланец, сформованная стенка и R10")
     ax.legend();fig.tight_layout();fig.savefig(OUT/"cup_section.png",dpi=150);plt.close(fig)
     (OUT/"cup_section_curves.json").write_text(json.dumps(lines))
+    
+    fig,ax=plt.subplots(figsize=(10,6),facecolor="white")
+    flange_lengths=[]
+    for e in part.Edges():
+        p=np.array([v.toTuple() for v in e.positions(np.linspace(0,1,101))])
+        ax.plot(p[:,2],p[:,1]-RF,color="#466d91",lw=1.5)
+        if e.geomType()=="CIRCLE":
+            rr=float(e._geomAdaptor().Circle().Radius())
+            if abs(rr-10)<.03:ax.plot(p[:,2],p[:,1]-RF,color="#e67d1c",lw=3)
+            if abs(rr-RF)<.003 and p[:,2].min()>150:
+                length=float(e.Length());flange_lengths.append(length)
+                q=p[len(p)//2]
+                ax.annotate(f"Фланец {length:.1f} мм по дуге цилиндра",(q[2],q[1]-RF),
+                            (q[2]-35,q[1]-RF+30),arrowprops={"arrowstyle":"->"},fontsize=10)
+    assert flange_lengths and all(40<l<60 for l in flange_lengths),flange_lengths
+    ax.set_xlim(155,275);ax.set_ylim(-35,70);ax.set_aspect("equal");ax.grid(alpha=.2)
+    ax.set_xlabel("Z, мм");ax.set_ylabel("Y − Rфланца, мм")
+    ax.set_title("Увеличенное сечение: фланец около50мм и переходR10")
+    fig.tight_layout();fig.savefig(OUT/"cup_section_flange_R10.png",dpi=160);plt.close(fig)
+
     cq.exporters.export(part,str(CAD/"cup_section.step"),exportType="STEP")
     assert (any(abs(r-10)<.03 for r in circle_radii) or any(abs(r["radius_mm"]-10)<.03 for r in fitted_radii)),("R10 not verified in section",circle_radii)
-    return {"native_circle_radii_in_section_mm":circle_radii,"fitted_circle_radii_in_section":fitted_radii,"R10_section_verified":True}
+    return {"native_circle_radii_in_section_mm":circle_radii,"fitted_circle_radii_in_section":fitted_radii,"R10_section_verified":True,"upper_flange_arc_lengths_mm":flange_lengths}
 
 def common(a,b):
     v=float(a.intersect(b).Volume());return max(0.,v)
@@ -273,6 +325,7 @@ def main():
     print("Opening verified",report["analytic_opening"],flush=True)
     local,blend_sig,cupmeta=build_cup();local=export(local,"cup_local")
     report["cup"]=cupmeta;report["cup"]["section"]=section_check(local,blend_sig)
+    report["cup"]["dimension_sketch_comparison"]=opening_actual_compare(local)
     for plane in ("YZ","XY"):
         error=float(local.cut(local.mirror(plane)).Volume())
         assert error<.02,(plane,error)
@@ -345,6 +398,18 @@ def main():
     view=.25*np.array([1.,0.,0.])-.97*frame.n+.13*frame.up
     perspective=rasterize(natural_scene,1050,1300,view,frame.origin,physical_size=(400,500),perspective=True,distance=1450)
     save_img(perspective,"assembly_perspective.png","Ту-214 / новая чашка и ручка120×30×15","Исходная панель сохранена; положение самой шторки не менялось.")
+    
+    # Qualitative comparison with a readable repository photograph.
+    photo=np.asarray(Image.open(REPO/"tu214-sidewall/references/18205_marked.png").convert("RGB"))
+    fig,axs=plt.subplots(1,2,figsize=(13,7),facecolor="white")
+    axs[0].imshow(photo);axs[0].set_xlim(965,1294);axs[0].set_ylim(790,270)
+    axs[0].set_title("Фото из репозитория / перспективный ракурс")
+    axs[1].imshow(natural);axs[1].set_title("Новый STEP / ортогональная сборка")
+    for ax in axs:ax.axis("off")
+    fig.text(.02,.025,"Качественное сравнение: переходы чашки и компактная ручка. Фото обрезано справа и не используется как обмер.",fontsize=9)
+    fig.tight_layout(rect=(0,.06,1,1));fig.savefig(OUT/"photo_assembly_compare.png",dpi=160);plt.close(fig)
+    report["photograph_comparison"]={"repository_photo":"tu214-sidewall/references/18205_marked.png",
+        "current_chat_photo_visually_read":True,"quantitative_photo_measurement":False}
     report["cup"]["fillet_face_signatures_local"]=blend_sig
     assert original==protected(),"Baseline files changed"
     report["source_files_unchanged"]=True;report["source_sha256"]=original;report["all_checks_passed"]=True
@@ -353,7 +418,7 @@ def main():
 
 Проём:247×345мм в ортогональной фронтальной проекции, восемь нативных окружностей R1000/R350/R90. Центры и углы вычислены по внутренней касательности; сплайновые переходы в контуре не применяются. [Проверка](report.json), [контурSTEP](cad/opening_contour.step), [чертёж](previews/opening_analytic_front.png).
 
-Чашка строится из концентричного цилиндрического фланцаR{RF:g}, восьми нативных конусов с согласованными касательными и цилиндрического днаR{RB:g}, с последующим вырезанием точного проёма. Это аналитическая конструкция формованного углубления; произвольный Loft не применяется. Передняя поверхность плавно сопряжена R10; параллельная задняя сторона R7 сохраняет толщину3мм. Фланец приблизительно50мм по наружному нормальному направлению от устья; внешняя кромка скрывается за исходной панелью. [Сечение](previews/cup_section.png).
+Чашка строится из концентричного цилиндрического фланцаR{RF:g}, восьми нативных конусов с согласованными касательными и цилиндрического днаR{RB:g}, с последующим вырезанием точного проёма. Это аналитическая конструкция формованного углубления; произвольный Loft не применяется. Передняя поверхность плавно сопряжена R10; параллельная задняя сторона R7 сохраняет толщину3мм. Фланец приблизительно50мм по наружному нормальному направлению от устья; внешняя кромка скрывается за исходной панелью. [Сечение](previews/cup_section.png), [фланец и R10 крупно](previews/cup_section_flange_R10.png).\n\n![Отверстие чашки и размерный эскиз](previews/opening_sketch_overlay.png)
 
 ![Чашка и углыR10 в сборке](previews/assembly_front_R10.png)
 
@@ -362,7 +427,7 @@ def main():
 ![Ручка](previews/handle_three_views.png)
 ![Сборка](previews/assembly_perspective.png)
 
-ВершиныR10 действительно видны при ортогональном рендере исходной панели и всех деталей. Числа видимых пикселей каждого угла находятся вreport.json. Фотография и размерный эскиз пользователя визуально прочитаны в чате; имена/растровые байты вложений не переданы, поэтому их оригиналы не включены. Геометрия проверена по точным размерам эскиза, симметрии и касательности; визуальное сравнение с фото качественное.
+ВершиныR10 действительно видны при ортогональном рендере исходной панели и всех деталей. Числа видимых пикселей каждого угла находятся вreport.json. [Фото и сборка](previews/photo_assembly_compare.png) используют доступный файл tu214-sidewall/references/18205_marked.png. Последняя фотография и размерный эскиз пользователя визуально прочитаны в чате; имена/растровые байты вложений не переданы, поэтому их оригиналы не включены. Геометрия проверена по точным размерам эскиза, симметрии и касательности; визуальное сравнение с фото качественное.
 
 Исходные CAD-файлы и панель не перезаписаны; их SHA-256 совпадает. В сборочныхSTEP сохранены исходные BRep-записи панели. [Открытая сборка](cad/assembly_open.step), [Чашка1](cad/cup_1.step), [Чашка2](cad/cup_2.step), [Ручка](cad/handle.step).
 
