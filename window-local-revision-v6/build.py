@@ -14,7 +14,7 @@ from OCP.gp import gp_Pnt
 from OCP.BRepBuilderAPI import BRepBuilderAPI_MakeFace,BRepBuilderAPI_MakeEdge
 from OCP.BRepOffsetAPI import BRepOffsetAPI_MakeOffsetShape
 from OCP.BRepOffset import BRepOffset_Skin
-from OCP.GeomAbs import GeomAbs_Intersection
+from OCP.GeomAbs import GeomAbs_Intersection,GeomAbs_Arc
 from OCP.BRepMesh import BRepMesh_IncrementalMesh
 from OCP.TopAbs import TopAbs_REVERSED
 from OCP.BRepLib import BRepLib_ToolTriangulatedShape
@@ -116,10 +116,14 @@ def inner_taper():
     return base.pure_solid(base.solid_from_faces(faces))
 def build_candidate():
     inside=inner_taper();print("Local cavity valid",inside.isValid(),flush=True)
-    op=BRepOffsetAPI_MakeOffsetShape()
-    op.PerformByJoin(inside.wrapped,T,1e-5,BRepOffset_Skin,False,False,GeomAbs_Intersection,True)
-    assert op.IsDone(),"Normal wall offset failed"
-    outside=base.pure_solid(cq.Shape.cast(op.Shape()).fix())
+    outside=None
+    for intersect,join in ((False,GeomAbs_Arc),(True,GeomAbs_Intersection),(True,GeomAbs_Arc),(False,GeomAbs_Intersection)):
+        op=BRepOffsetAPI_MakeOffsetShape()
+        op.PerformByJoin(inside.wrapped,T,1e-5,BRepOffset_Skin,intersect,False,join,False)
+        print("Offset attempt",intersect,join,op.IsDone(),op.Shape().IsNull() if op.IsDone() else True,flush=True)
+        if op.IsDone() and not op.Shape().IsNull():
+            outside=base.pure_solid(cq.Shape.cast(op.Shape()).fix());break
+    assert outside is not None,"Normal wall offset failed"
     flange=v5.radial_band(RF,RF+T).intersect(v5.prism(85))
     walls=outside.cut(inside).intersect(v5.radial_band(RF,RB))
     floor=v5.radial_band(RB,RB+T).intersect(outside)
@@ -179,8 +183,6 @@ def control_images(report,frames,blend_sig):
         c=v5.to_world(cq.Vertex.makeVertex(*s[1:]),frame).Center();ws.append([s[0],c.x,c.y,c.z])
     cm=painted(CAD/"cup_2.step",ws);scene=merge([fm,cm,sm,hm])
     image=rasterize(scene,1000,1250,-frame.n,frame.origin,physical_size=(400,500))
-    v5.save_img(image,"unused.png","unused","unused")
-    # v5 save helper writes into the old directory; save our figures explicitly.
     def save(im,name,title,note=""):
         fig,ax=plt.subplots(figsize=(9,9),facecolor="white");ax.imshow(im);ax.axis("off");ax.set_title(title)
         fig.text(.02,.015,note,fontsize=9);fig.tight_layout(rect=(0,.04,1,1));fig.savefig(OUT/name,dpi=150);plt.close(fig)
