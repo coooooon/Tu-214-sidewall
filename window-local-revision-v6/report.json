@@ -1,23 +1,31 @@
 {
   "baseline_commit": "4db64ea3848f3ec188f8cd6854606298099a5fad",
-  "local_material_net_change_mm3": -4389.01878366046,
+  "local_material_net_change_mm3": -3587.5245595707675,
   "outside_boundary_preservation": [
     {
       "points": 256,
       "max_boundary_distance_mm": 5.084229945850415e-13,
-      "rms_boundary_distance_mm": 1.7099315496132553e-13
+      "rms_boundary_distance_mm": 1.8163423294246106e-13
     },
     {
       "points": 256,
-      "max_boundary_distance_mm": 4.96821317779374e-13,
-      "rms_boundary_distance_mm": 1.9224235355668545e-13
+      "max_boundary_distance_mm": 4.766465574234764e-13,
+      "rms_boundary_distance_mm": 1.8358970429275654e-13
     }
   ],
+  "external_envelope_errors_mm": {
+    "xmin": 0.0,
+    "xmax": 0.0,
+    "ymin": 0.0,
+    "ymax": 0.0,
+    "zmin": 0.0,
+    "zmax": 0.0
+  },
   "cup_symmetry_difference_mm3": [
     0.0,
     0.0
   ],
-  "corner_G1_normal_residual": 2.0041820487823113e-13,
+  "corner_G1_normal_residual": 2.0016622999047385e-13,
   "corner_fillet_radius_mm": 10.0,
   "back_parallel_fillet_radius_mm": 7.0,
   "opening": {

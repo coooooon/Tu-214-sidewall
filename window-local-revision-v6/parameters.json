@@ -1,9 +1,9 @@
 {
   "baseline_commit": "4db64ea3848f3ec188f8cd6854606298099a5fad",
   "mount_gap_mm": 7.0,
-  "corner_follow_clearance_mm": 1.0,
+  "corner_follow_clearance_mm": 5.0,
   "corner_sector_margin_rad": 0.04,
   "local_depth_limit_radius_mm": 1812.5,
-  "blend_y_start_mm": 1774.5,
+  "blend_y_start_mm": 1759.5,
   "blend_y_end_mm": 1794.5
 }
