@@ -277,7 +277,7 @@ def control_images(report,frames,blend_sig):
     fig,ax=plt.subplots(figsize=(10,6),facecolor="white")
     ax.axhline(0,color="#445",lw=2,label="Нижняя кромка шторки")
     # Entire handle projected onto developed shade coordinates, from the real STEP.
-    verts,tris=h.tessellate(.01,.04);p=np.array([v.toTuple() for v in verts])
+    verts,tris=h.tessellate(.01,.04);tris=np.asarray(tris);p=np.array([v.toTuple() for v in verts])
     hs=R*(np.arctan2(p[:,2]-frame.cz,p[:,1]-frame.cy)-frame.theta)-edge
     from shapely.geometry import Polygon
     from shapely import union_all
