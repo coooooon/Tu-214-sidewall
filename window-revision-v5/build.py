@@ -229,25 +229,26 @@ def mount_handle(canonical,frame):
     return base.pure_solid(h.fuse(land).fix())
 
 def plot_handle(handle):
-    vertices,tri=handle.tessellate(.025,.06);vv=np.array([p.toTuple() for p in vertices]);tri=np.asarray(tri)
+    vertices,tri=handle.tessellate(.005,.03);vv=np.array([p.toTuple() for p in vertices]);tri=np.asarray(tri)
     from shapely.geometry import Polygon
     from shapely import union_all
     fig,axs=plt.subplots(1,3,figsize=(15,5),facecolor="white")
     old=cq.importers.importStep(str(REPO/"handle-revision-v4/cad/handle.step")).val()
-    ov,ot=old.tessellate(.025,.06);ov=np.array([p.toTuple() for p in ov]);ot=np.asarray(ot)
+    ov,ot=old.tessellate(.005,.03);ov=np.array([p.toTuple() for p in ov]);ot=np.asarray(ot)
     metrics={}
     for ax,axes,label,scale,kind in zip(axs,[[0,2],[1,2],[0,1]],["Спереди / 120×15","Сбоку / 30×15","Сверху / 120×30"],[[1.2,.6],[1.,.6],[1.2,1.]],["front","side","top"]):
         def outline(points,ids):
             p=points[:,axes].copy()
             if axes==[1,2]:p[:,0]*=-1
             if axes==[0,1]:p[:,1]*=-1
-            u=union_all([Polygon(p[t]) for t in ids if Polygon(p[t]).area>1e-7],grid_size=.002)
+            u=union_all([Polygon(p[t]) for t in ids if Polygon(p[t]).area>1e-7],grid_size=.0005)
             return max(u.geoms,key=lambda x:x.area) if u.geom_type=="MultiPolygon" else u
         newp=outline(vv,tri);oldp=outline(ov,ot)
         from shapely.affinity import scale as poly_scale
         reference=poly_scale(oldp,xfact=scale[0],yfact=scale[1],origin=(0,0))
         from shapely.geometry import LineString
         metrics[kind]=float(LineString(newp.exterior.coords).hausdorff_distance(LineString(reference.exterior.coords)))
+        print("Handle exterior projection difference",kind,metrics[kind],flush=True)
         assert metrics[kind]<.1,(kind,metrics[kind])
         q=np.array(newp.exterior.coords);a=np.array(reference.exterior.coords)
         ax.plot(*q.T,color="#2563eb",lw=2,label="Новый STEP")
