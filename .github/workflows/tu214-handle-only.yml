@@ -1,0 +1,46 @@
+name: Tu214 handle-only CAD revision
+on:
+  push:
+    branches: [work/tu214-handle-v4]
+    paths:
+      - handle-revision-v4/build_and_compare.py
+      - handle-revision-v4/parameters.json
+      - handle-revision-v4/requirements.txt
+      - .github/workflows/tu214-handle-only.yml
+permissions:
+  contents: write
+concurrency:
+  group: tu214-handle-v4
+  cancel-in-progress: true
+jobs:
+  handle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: handle-revision-v4/requirements.txt
+      - name: Install CAD and plotting dependencies
+        run: python -m pip install -r handle-revision-v4/requirements.txt
+      - name: Build handle, reimport STEP, compare projections and check placement
+        run: |
+          python -m py_compile handle-revision-v4/build_and_compare.py
+          python -u handle-revision-v4/build_and_compare.py
+      - name: Commit generated handle and review evidence
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- handle-revision-v4
+          if ! git diff --cached --quiet; then
+            git commit -m 'Save revised 100x30x25 handle STEP and visual comparison'
+            git push origin "HEAD:$GITHUB_REF_NAME"
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: tu214-handle-v4
+          path: handle-revision-v4
+          retention-days: 7
