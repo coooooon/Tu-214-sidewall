@@ -108,7 +108,7 @@ def fillet(shape,radius,edges):
 def build_cup():
     inner=taper(0)
     outer=taper(T/math.cos(ALPHA))
-    flange=radial_band(RF,RF+T).intersect(prism(CFG["mouth_offset_mm"]+CFG["flange_width_mm"]))
+    flange=radial_band(RF,RF+T).intersect(prism(CFG["mouth_offset_mm"]+CFG["flange_width_mm"]+CFG["fillet_radius_mm"]))
     walls=outer.cut(inner).intersect(radial_band(RF,RB+T))
     floor=radial_band(RB,RB+T).intersect(outer)
     raw=base.pure_solid(flange.fuse(walls).fuse(floor).cut(inner).cut(prism(0)).fix())
@@ -119,7 +119,12 @@ def build_cup():
     print("Rear R7 selected edges",len(rear_edges),flush=True)
     rounded,back_signatures=fillet(rounded,10.-T,rear_edges)
     assert rounded.isValid() and len(rounded.Solids())==1
-    return rounded,signatures,{"inner_fillet_radius_mm":10.,"outer_parallel_radius_mm":10.-T,
+    lip=lip_edges(rounded,RF)
+    lip_offsets=[opening_offset(np.array(p.toTuple())[[0,2]]) for e in lip for p in e.positions(np.linspace(0,1,17))]
+    outer_offset=CFG["mouth_offset_mm"]+CFG["flange_width_mm"]+CFG["fillet_radius_mm"]
+    actual_flange=[outer_offset-max(lip_offsets),outer_offset-min(lip_offsets)]
+    assert 40<min(actual_flange) and max(actual_flange)<60,actual_flange
+    return rounded,signatures,{"actual_flange_width_range_mm":actual_flange,"inner_fillet_radius_mm":10.,"outer_parallel_radius_mm":10.-T,
        "inner_edge_count":len(inner_edges),"outer_edge_count":len(rear_edges),
        "skin_construction":"concentric cylindrical flange + eight native tangent cones + drilled analytical opening",
        "wall_generator_slope":SLOPE,"wall_generator_angle_deg":math.degrees(ALPHA)}
@@ -142,7 +147,8 @@ def analytic_check():
         tangent.append(float(math.acos(np.clip(np.dot(da,db)/np.linalg.norm(da)/np.linalg.norm(db),-1,1))))
     w=wire(0)
     cq.exporters.export(w,str(CAD/"opening_contour.step"),exportType="STEP")
-    rw=cq.importers.importStep(str(CAD/"opening_contour.step")).val().Wires()[0]
+    rw=cq.Wire.assembleEdges(cq.importers.importStep(str(CAD/"opening_contour.step")).val().Edges())
+    assert rw.IsClosed()
     radii=[]
     for e in rw.Edges():
         assert e.geomType()=="CIRCLE",e.geomType()

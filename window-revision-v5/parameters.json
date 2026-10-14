@@ -18,5 +18,6 @@
     15
   ],
   "handle_source": "handle-revision-v4/cad/handle.step",
-  "handle_offset_mm": 3
+  "handle_offset_mm": 3,
+  "flange_outer_edge_allowance_mm": 10
 }
