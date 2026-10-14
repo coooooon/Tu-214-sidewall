@@ -159,6 +159,12 @@ def masks():
 def export(s,name):
     path=CAD/(name+".step");s=base.pure_solid(s);cq.exporters.export(s,str(path),exportType="STEP")
     return base.pure_solid(cq.importers.importStep(str(path)).val())
+def precise_volume(shape):
+    from OCP.BRepGProp import BRepGProp
+    from OCP.GProp import GProp_GProps
+    props=GProp_GProps()
+    err=BRepGProp.VolumeProperties_s(shape.wrapped,props,1e-10,True,False)
+    return float(props.Mass())
 def boolean(a,b,kind):
     cls={"cut":BRepAlgoAPI_Cut,"common":BRepAlgoAPI_Common,"fuse":BRepAlgoAPI_Fuse}[kind]
     op=cls();args=TopTools_ListOfShape();args.Append(a.wrapped);ops=TopTools_ListOfShape();ops.Append(b.wrapped)
@@ -269,9 +275,9 @@ def main():
     result=base.pure_solid(boolean(retained,new_local,"fuse").fix())
     result=export(result,"cup_local")
     checked_retained=boolean(result,region,"cut")
-    shared_retained=float(boolean(retained,checked_retained,"common").Volume())
-    outside_a=abs(float(retained.Volume())-shared_retained)
-    outside_b=abs(float(checked_retained.Volume())-shared_retained)
+    shared_retained=precise_volume(boolean(retained,checked_retained,"common"))
+    outside_a=abs(precise_volume(retained)-shared_retained)
+    outside_b=abs(precise_volume(checked_retained)-shared_retained)
     shared_local=float(boolean(old_local,new_local,"common").Volume())
     added_volume=max(0.,float(new_local.Volume())-shared_local)
     removed_volume=max(0.,float(old_local.Volume())-shared_local)
