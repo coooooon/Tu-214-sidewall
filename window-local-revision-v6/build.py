@@ -12,6 +12,8 @@ from OCP.Geom import Geom_BSplineSurface
 from OCP.TColgp import TColgp_Array2OfPnt
 from OCP.gp import gp_Pnt
 from OCP.BRepBuilderAPI import BRepBuilderAPI_MakeFace,BRepBuilderAPI_MakeEdge
+from OCP.BRepAlgoAPI import BRepAlgoAPI_Cut,BRepAlgoAPI_Common,BRepAlgoAPI_Fuse
+from OCP.TopTools import TopTools_ListOfShape
 from OCP.BRepOffsetAPI import BRepOffsetAPI_MakeOffsetShape
 from OCP.BRepOffset import BRepOffset_Skin
 from OCP.GeomAbs import GeomAbs_Intersection,GeomAbs_Arc
@@ -157,6 +159,13 @@ def masks():
 def export(s,name):
     path=CAD/(name+".step");s=base.pure_solid(s);cq.exporters.export(s,str(path),exportType="STEP")
     return base.pure_solid(cq.importers.importStep(str(path)).val())
+def boolean(a,b,kind):
+    cls={"cut":BRepAlgoAPI_Cut,"common":BRepAlgoAPI_Common,"fuse":BRepAlgoAPI_Fuse}[kind]
+    op=cls();args=TopTools_ListOfShape();args.Append(a.wrapped);ops=TopTools_ListOfShape();ops.Append(b.wrapped)
+    op.SetArguments(args);op.SetTools(ops);op.SetFuzzyValue(1e-5);op.SetNonDestructive(True);op.SetRunParallel(True);op.Build()
+    assert op.IsDone() and not op.HasErrors(),("Boolean failed",kind)
+    assert not op.Shape().IsNull(),("Null Boolean result",kind)
+    return cq.Shape.cast(op.Shape())
 def cut_volume(a,b):
     try:return max(0.,float(a.cut(b).Volume()))
     except ValueError as exc:
@@ -252,18 +261,28 @@ def control_images(report,frames,blend_sig):
 def main():
     protected_before=protected();old=cq.importers.importStep(str(OLD/"cad/cup_local.step")).val()
     candidate,sigs=build_candidate();region=masks()
-    # Transfer only corner material changes to the original imported cup.
-    added=candidate.cut(old).intersect(region);removed=old.cut(candidate).intersect(region)
-    result=base.pure_solid(old.cut(removed).fuse(added).fix())
+    # Replace only the material inside the four bounded corner regions.
+    old_local=boolean(old,region,"common")
+    new_local=boolean(candidate,region,"common")
+    retained=boolean(old,region,"cut")
+    print("Corner regions clipped",old_local.Volume(),new_local.Volume(),flush=True)
+    result=base.pure_solid(boolean(retained,new_local,"fuse").fix())
     result=export(result,"cup_local")
-    outside_a=outside_difference(old,result,region);outside_b=outside_difference(result,old,region)
+    checked_retained=boolean(result,region,"cut")
+    shared_retained=float(boolean(retained,checked_retained,"common").Volume())
+    outside_a=abs(float(retained.Volume())-shared_retained)
+    outside_b=abs(float(checked_retained.Volume())-shared_retained)
+    shared_local=float(boolean(old_local,new_local,"common").Volume())
+    added_volume=max(0.,float(new_local.Volume())-shared_local)
+    removed_volume=max(0.,float(old_local.Volume())-shared_local)
+    print("Outside region differences",outside_a,outside_b,flush=True)
     assert max(outside_a,outside_b)<.02,(outside_a,outside_b)
     sym=[cut_volume(result,result.mirror(p)) for p in ("YZ","XY")]
     assert max(sym)<.02,sym
     opening=v5.opening_actual_compare(result)
     # This helper writes its comparison into v5 previews; do not save those changes.
     panel=cq.importers.importStep(str(base.SOURCE)).val();frames=base.frames_from_panel(panel)
-    report={"baseline_commit":CFG["baseline_commit"],"corner_material_added_mm3":float(added.Volume()),"corner_material_removed_mm3":float(removed.Volume()),
+    report={"baseline_commit":CFG["baseline_commit"],"corner_material_added_mm3":added_volume,"corner_material_removed_mm3":removed_volume,
       "outside_local_regions_difference_mm3":[outside_a,outside_b],"cup_symmetry_difference_mm3":sym,"corner_G1_normal_residual":max(G1_ERRORS),"opening":opening,"handle_mount":[],"assembly_checks":[]}
     for i,frame in enumerate(frames,1):
         export(v5.to_world(result,frame),f"cup_{i}")
