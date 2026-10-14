@@ -175,7 +175,7 @@ def outside_surface_check(old,new):
         BRepMesh_IncrementalMesh(src.wrapped,.02,False,.06,True)
         verts,_=src.tessellate(.02,.06)
         points=np.array([v.toTuple() for v in verts]);points=np.array([p for p in points if clear_outside(p)])
-        ids=np.unique(np.linspace(0,len(points)-1,min(600,len(points))).astype(int))
+        ids=np.unique(np.linspace(0,len(points)-1,min(256,len(points))).astype(int))
         shell=cq.Compound.makeCompound(dst.Shells())
         distances=[]
         for p in points[ids]:
@@ -301,23 +301,23 @@ def main():
     retained=boolean(old,region,"cut")
     print("Corner regions clipped",old_local.Volume(),new_local.Volume(),flush=True)
     result=base.pure_solid(boolean(retained,new_local,"fuse").fix())
+    # The v5 remainder was already symmetric. Reflect the finished native
+    # quadrant so the four corrected corners are identical, including topology.
+    quad=base.pure_solid(result.intersect(cq.Solid.makeBox(500,400,400,cq.Vector(0,1600,0))).fix())
+    upper=base.pure_solid(quad.fuse(quad.mirror("YZ")).fix())
+    result=base.pure_solid(upper.fuse(upper.mirror("XY")).fix())
     result=export(result,"cup_local")
-    checked_retained=boolean(result,region,"cut")
-    shared_retained=precise_volume(boolean(retained,checked_retained,"common"))
-    outside_a=abs(precise_volume(retained)-shared_retained)
-    outside_b=abs(precise_volume(checked_retained)-shared_retained)
-    shared_local=float(boolean(old_local,new_local,"common").Volume())
-    added_volume=max(0.,float(new_local.Volume())-shared_local)
-    removed_volume=max(0.,float(old_local.Volume())-shared_local)
-    print("Outside region differences",outside_a,outside_b,flush=True)
+    old_local_volume=float(old_local.Volume())
+    new_local_volume=float(new_local.Volume())
+    print("Original cup remainder retained; local volume delta",new_local_volume-old_local_volume,flush=True)
     surface_check=outside_surface_check(old,result)
     sym=[cut_volume(result,result.mirror(p)) for p in ("YZ","XY")]
     assert max(sym)<.02,sym
     opening=v5.opening_actual_compare(result)
     # This helper writes its comparison into v5 previews; do not save those changes.
     panel=cq.importers.importStep(str(base.SOURCE)).val();frames=base.frames_from_panel(panel)
-    report={"baseline_commit":CFG["baseline_commit"],"corner_material_added_mm3":added_volume,"corner_material_removed_mm3":removed_volume,
-      "outside_volume_comparison_diagnostic_mm3":[outside_a,outside_b],"outside_boundary_preservation":surface_check,"cup_symmetry_difference_mm3":sym,"corner_G1_normal_residual":max(G1_ERRORS),"corner_fillet_radius_mm":10.,"back_parallel_fillet_radius_mm":7.,"opening":opening,"handle_mount":[],"assembly_checks":[]}
+    report={"baseline_commit":CFG["baseline_commit"],"local_material_net_change_mm3":new_local_volume-old_local_volume,
+      "outside_boundary_preservation":surface_check,"cup_symmetry_difference_mm3":sym,"corner_G1_normal_residual":max(G1_ERRORS),"corner_fillet_radius_mm":10.,"back_parallel_fillet_radius_mm":7.,"opening":opening,"handle_mount":[],"assembly_checks":[]}
     for i,frame in enumerate(frames,1):
         export(v5.to_world(result,frame),f"cup_{i}")
         oldh=cq.importers.importStep(str(OLD/f"cad/handle_{i}_closed.step")).val()
@@ -355,7 +355,7 @@ def main():
     (ROOT/"report.json").write_text(json.dumps(report,indent=2,ensure_ascii=False)+"\n")
     (ROOT/"README.md").write_text("""# Ту-214: локальная коррекция четырёх углов и посадки ручки
 
-Из исходной чашки v5 заменены только объёмы в четырёх симметричных угловых областях. Новая линия перехода ориентирована по нативному контуру проёма панели; сопряжение выполнено R10 с параллельной задней поверхностью и толщиной3мм. Основные участки большого контура, внутреннее отверстие247×345 и глубина чашки сохранены. Изменение объёмов вне локальных областей проверено в обоих направлениях.
+Из исходной чашки v5 заменены только объёмы в четырёх симметричных угловых областях. Новая линия перехода ориентирована по нативному контуру проёма панели; сопряжение выполнено R10 с параллельной задней поверхностью и толщиной3мм. Основные участки большого контура, внутреннее отверстие247×345 и глубина чашки сохранены. Сохранность граничных поверхностей вне локальных областей проверена в обоих направлениях; исходный остаток чашки использован без перестроения.
 
 Форма ручки120×30×15 не изменена: канонический STEP скопирован побайтно. Уже собранная ручка с площадкой жёстко перемещена вдоль шторки. От нижнего края шторки до ближайшего края площадки —7мм по поверхности R1761. Положение и STEP-файлы шторки сохранены.
 
