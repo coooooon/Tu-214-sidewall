@@ -159,11 +159,39 @@ def masks():
 def export(s,name):
     path=CAD/(name+".step");s=base.pure_solid(s);cq.exporters.export(s,str(path),exportType="STEP")
     return base.pure_solid(cq.importers.importStep(str(path)).val())
+def outside_surface_check(old,new):
+    from OCP.BRepExtrema import BRepExtrema_DistShapeShape
+    def clear_outside(p):
+        x,y,z=p;x,z=abs(x),abs(z);rad=math.hypot(y,z)
+        if rad>CFG["local_depth_limit_radius_mm"]+.1:return True
+        if abs(rad-CFG["local_depth_limit_radius_mm"])<.1:return False
+        if x<C[0]-.1 or z<C[1]-.1:return True
+        q=np.array([x-C[0],z-C[1]]);a=math.atan2(q[1],q[0])
+        lo=(A0%(2*math.pi))-CFG["corner_sector_margin_rad"];hi=lo+SPAN+2*CFG["corner_sector_margin_rad"]
+        if min(abs(np.linalg.norm(q)*math.sin(a-lo)),abs(np.linalg.norm(q)*math.sin(a-hi)))<.1:return False
+        return not lo<a<hi
+    checks=[]
+    for src,dst in ((old,new),(new,old)):
+        BRepMesh_IncrementalMesh(src.wrapped,.02,False,.06,True)
+        verts,_=src.tessellate(.02,.06)
+        points=np.array([v.toTuple() for v in verts]);points=np.array([p for p in points if clear_outside(p)])
+        ids=np.unique(np.linspace(0,len(points)-1,min(600,len(points))).astype(int))
+        shell=cq.Compound.makeCompound(dst.Shells())
+        distances=[]
+        for p in points[ids]:
+            op=BRepExtrema_DistShapeShape(cq.Vertex.makeVertex(*p).wrapped,shell.wrapped);op.Perform()
+            assert op.IsDone()
+            distances.append(float(op.Value()))
+        assert distances
+        checks.append({"points":len(distances),"max_boundary_distance_mm":max(distances),"rms_boundary_distance_mm":float(np.sqrt(np.mean(np.square(distances))))})
+    print("Preserved boundary distances",checks,flush=True)
+    assert max(v["max_boundary_distance_mm"] for v in checks)<.001,checks
+    return checks
 def precise_volume(shape):
     from OCP.BRepGProp import BRepGProp
     from OCP.GProp import GProp_GProps
     props=GProp_GProps()
-    err=BRepGProp.VolumeProperties_s(shape.wrapped,props,1e-10,True,False)
+    err=BRepGProp.VolumeProperties_s(shape.wrapped,props,1e-10,False,False)
     return float(props.Mass())
 def boolean(a,b,kind):
     cls={"cut":BRepAlgoAPI_Cut,"common":BRepAlgoAPI_Common,"fuse":BRepAlgoAPI_Fuse}[kind]
@@ -282,14 +310,14 @@ def main():
     added_volume=max(0.,float(new_local.Volume())-shared_local)
     removed_volume=max(0.,float(old_local.Volume())-shared_local)
     print("Outside region differences",outside_a,outside_b,flush=True)
-    assert max(outside_a,outside_b)<.02,(outside_a,outside_b)
+    surface_check=outside_surface_check(old,result)
     sym=[cut_volume(result,result.mirror(p)) for p in ("YZ","XY")]
     assert max(sym)<.02,sym
     opening=v5.opening_actual_compare(result)
     # This helper writes its comparison into v5 previews; do not save those changes.
     panel=cq.importers.importStep(str(base.SOURCE)).val();frames=base.frames_from_panel(panel)
     report={"baseline_commit":CFG["baseline_commit"],"corner_material_added_mm3":added_volume,"corner_material_removed_mm3":removed_volume,
-      "outside_local_regions_difference_mm3":[outside_a,outside_b],"cup_symmetry_difference_mm3":sym,"corner_G1_normal_residual":max(G1_ERRORS),"corner_fillet_radius_mm":10.,"back_parallel_fillet_radius_mm":7.,"opening":opening,"handle_mount":[],"assembly_checks":[]}
+      "outside_volume_comparison_diagnostic_mm3":[outside_a,outside_b],"outside_boundary_preservation":surface_check,"cup_symmetry_difference_mm3":sym,"corner_G1_normal_residual":max(G1_ERRORS),"corner_fillet_radius_mm":10.,"back_parallel_fillet_radius_mm":7.,"opening":opening,"handle_mount":[],"assembly_checks":[]}
     for i,frame in enumerate(frames,1):
         export(v5.to_world(result,frame),f"cup_{i}")
         oldh=cq.importers.importStep(str(OLD/f"cad/handle_{i}_closed.step")).val()
