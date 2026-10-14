@@ -159,6 +159,29 @@ def build_candidate():
     result=base.pure_solid(u.fuse(u.mirror("XY")).fix())
     sigs=[[s[0],sx*s[1],s[2],sz*s[3]] for s in sigs for sx in (-1,1) for sz in (-1,1)]
     return result,sigs
+def sew_local_regions(retained,patches):
+    from OCP.BRepBuilderAPI import BRepBuilderAPI_Sewing
+    lo=(A0%(2*math.pi))-CFG["corner_sector_margin_rad"]
+    hi=lo+SPAN+2*CFG["corner_sector_margin_rad"]
+    def is_cut_cap(face):
+        if face.geomType()=="CYLINDER":
+            ad=face._geomAdaptor().Cylinder()
+            return abs(ad.Radius()-CFG["local_depth_limit_radius_mm"])<1e-5 and abs(ad.Axis().Direction().X())>.999
+        if face.geomType()!="PLANE":return False
+        center=face.Center();q=np.array([abs(center.x)-C[0],abs(center.z)-C[1]])
+        if q[0]<-.01 or q[1]<-.01:return False
+        return min(abs(q[0]*math.sin(t)-q[1]*math.cos(t)) for t in (lo,hi))<1e-4
+    faces=[f for body in (retained,patches) for f in body.Faces() if not is_cut_cap(f)]
+    print("Splice faces kept",len(faces),"caps excluded",len(retained.Faces())+len(patches.Faces())-len(faces),flush=True)
+    for tol in (1e-4,.001):
+        sew=BRepBuilderAPI_Sewing(tol,True,True,True,False)
+        for f in faces:sew.Add(f.wrapped)
+        sew.Perform();shape=cq.Shape.cast(sew.SewedShape())
+        print("Local sewing",tol,"free edges",sew.NbFreeEdges(),"shells",len(shape.Shells()),flush=True)
+        if sew.NbFreeEdges()==0 and len(shape.Shells())==1:
+            result=cq.Solid.makeSolid(shape.Shells()[0]).fix()
+            if result.isValid():return base.pure_solid(result)
+    raise RuntimeError("Local patch boundary did not sew")
 def masks():
     lo=A0-CFG["corner_sector_margin_rad"];hi=A0+SPAN+CFG["corner_sector_margin_rad"]
     def q(r,a):return cq.Vector(C[0]+r*math.cos(a),1600,C[1]+r*math.sin(a))
@@ -340,7 +363,7 @@ def main():
     new_local=boolean(candidate,region,"common")
     retained=boolean(old,region,"cut")
     print("Corner regions clipped",old_local.Volume(),new_local.Volume(),flush=True)
-    result=base.pure_solid(boolean(retained,new_local,"fuse").fix())
+    result=sew_local_regions(retained,new_local)
     # The v5 remainder was already symmetric. Reflect the finished native
     # quadrant so the four corrected corners are identical, including topology.
     quad=base.pure_solid(result.intersect(cq.Solid.makeBox(500,400,400,cq.Vector(0,1600,0))).fix())
